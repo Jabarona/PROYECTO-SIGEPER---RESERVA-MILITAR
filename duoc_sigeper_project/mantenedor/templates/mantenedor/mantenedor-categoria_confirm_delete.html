@@ -1,0 +1,53 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block tittle %}Categoria | Delete{% endblock %}
+
+{% block content %}
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Eliminar Categoria</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+        <li class="breadcrumb-item">Mantenedor</li>
+        <li class="breadcrumb-item active">Eliminar Categoria</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body"> 
+            <div class="container  d-flex justify-content-center  mt-3">
+              
+                  <div>
+                    <form action="" method="post">
+                      {% csrf_token %}
+                      <p>¿Estás seguro de que quieres borrar "{{ object }}"?</p>
+                      <div class="d-flex justify-content-center">
+                        <input class="btn btn-primary mx-1" type="submit" value="Sí, borrar" />
+                        <a class="btn btn-danger"href="{% url 'list_categoria' %}" > Volver</a>
+                      </div>
+                    </form>
+                  </div>
+                
+            </div>   
+          </div>         
+        </div>          
+      </div>
+    </div>
+  </section>
+
+ 
+ 
+
+</main><!-- End #main -->
+
+{% endblock %}
+
+{% block extra_js %}
+
+{% endblock %}

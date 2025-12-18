@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+  {% load static %}
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+    <title>{% block tittle %}{% endblock %} | SIGEPER</title>
+    
+    <meta content="" name="description" />
+    <meta content="" name="keywords" />
+
+    <!-- Favicons -->
+    <link href="{% static 'core/img/favicon.ico' %}" rel="icon" />
+    <link href="{% static 'core/img/logo_reserva.png' %}" rel="apple-touch-icon"/>
+
+    
+    <!-- Vendor CSS Files -->
+    <link rel="stylesheet" type="text/css" href="{% static 'core/vendor/bootstrap/css/bootstrap.min.css' %}" />
+    <link href="{% static 'core/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet"/>
+    <link href="{% static 'core/vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'core/vendor/quill/quill.snow.css' %}" rel="stylesheet"/>
+    <link href="{% static 'core/vendor/quill/quill.bubble.css' %}" rel="stylesheet"/>
+    <link href="{% static 'core/vendor/remixicon/remixicon.css' %}" rel="stylesheet"/>
+
+    <!-- Template Main CSS File -->
+    <link href="{% static 'core/css/style.css' %}" rel="stylesheet" />
+
+    
+    {% block extra_css %}{% endblock %}
+
+  </head>
+
+  <body>
+    
+    <!-- ======= Header ======= -->
+    <header id="header" class="header fixed-top d-flex align-items-center">
+      
+      <!-- start Logo -->
+      <div class="d-flex align-items-center justify-content-between">
+          <a href="{% url 'index' %}" class="logo d-flex align-items-center">
+          <img src="{% static 'core/img/logos/logo-reserva-letras.png' %}" alt="" />
+          <span class="d-none d-lg-block color1">SIGEPER</span>
+          </a>
+          <i class="bi bi-list toggle-sidebar-btn"></i>
+      </div>
+      <!-- End Logo -->
+      
+      <!--Buscador-->
+      <div class="search-bar">
+        <form class="search-form  d-flex align-items-center" method="GET" action="{% url 'search_reservista' %}">        
+          <input
+          type="text"
+          name="query"
+          class="form-control"
+          placeholder="Buscar"
+          value="{{ request.GET.query }}"
+        />
+          <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+        </form>
+      </div><!-- End Search Bar -->
+
+
+      <!-- start profile -->
+      <nav class="header-nav ms-auto"> 
+        <ul class="d-flex align-items-center">
+          <li class="nav-item d-block d-lg-none">
+            <a class="nav-link nav-icon search-bar-toggle" href="#">
+              <i class="bi bi-search"></i>
+            </a>
+          </li>
+          
+
+          <!-- icon profile -->           
+          <li class="nav-item dropdown pe-3">
+            <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+              {% if user.foto %}
+                <img src="{{ user.foto.url }}" alt="Profile" class="rounded-circle">
+              {% else %}
+                <img src="{% static 'core/img/soldier-(1).png' %}" alt="Profile" class="rounded-circle"/>
+              {% endif %}
+              <span class="d-none d-md-block dropdown-toggle ps-2 text-capitalize">
+                {% if user %}
+                  {{ user.grado.abreviacion }} {{ user.nombre }} {{ user.apellido_paterno }}
+                {% else %}
+                  Usuario
+                {% endif %}
+              </span>
+            </a>
+                      
+            <!-- dropdown menu -->
+            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+              <li class="dropdown-header">
+                {% if user %}
+                <h6 class="text-capitalize">{{ user.nombre }}  {{ user.apellido_paterno }}</h6>
+                <h6>{{ user.grado }}</h6>
+                {% else %}
+                  <h6>Usuario</h6>
+                {% endif %}
+              </li>
+              <li> <hr class="dropdown-divider"/> </li>
+              <li>
+                <a class="dropdown-item d-flex align-items-center" href="{% url 'profile' %}">
+                  <i class="bi bi-person"></i>
+                  <span>Mi Perfil</span>
+                </a>
+              </li>
+              <li> <hr class="dropdown-divider"/> </li>
+              <li>
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                  <i class="bi bi-question-circle"></i>
+                  <span>Necesitas Ayuda?</span>
+                </a>
+              </li>
+              <li> <hr class="dropdown-divider" /> </li>
+              <li> 
+                <form action="{% url 'logout' %}" method="POST" style="display: inline" class="dropdown-item d-flex align-items-center">
+                  {% csrf_token %}
+                  <button type="submit" class="nav-link collapsed">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    <span>Cerrar sesión</span>
+                  </button>
+                </form>
+              </li>
+            </ul><!-- dropdown menu -->
+          </li> <!-- End icon Profile  -->          
+        </ul>
+      </nav> 
+    </header> <!-- End Header -->
+
+    <!-- ======= Sidebar ======= -->
+    <aside id="sidebar" class="sidebar">
+      <ul class="sidebar-nav" id="sidebar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'index' %}">
+            <i class="bi bi-house"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        
+        <!-- start Mantenedor Nav -->
+        {% if user.is_admin or user.is_divper %}
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#Mantenedor-nav" data-bs-toggle="collapse" href="#">
+            <i class="bi bi-menu-button-wide"></i><span>Mantenedor</span
+            ><i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="Mantenedor-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+            <li>
+              <a href="{% url 'mantenedor' %}">
+                <i class="bi bi-circle"></i><span>Mantenedor</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'list_afp' %}">
+                <i class="bi bi-circle"></i><span>AFPs</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'list_arma' %}">
+                <i class="bi bi-circle"></i><span>Armas y Servicios</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'list_ciudad' %}">
+                <i class="bi bi-circle"></i><span>Ciudades</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'list_grado' %}">
+                <i class="bi bi-circle"></i><span>Grados</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'list_isapre' %}">
+                <i class="bi bi-circle"></i><span>ISAPREs</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'list_profesion' %}">
+                <i class="bi bi-circle"></i><span>Profesiones</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'list_religion' %}">
+                <i class="bi bi-circle"></i><span>Religiones</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'list_uac' %}">
+                <i class="bi bi-circle"></i><span>UACs</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'list_ubm' %}">
+                <i class="bi bi-circle"></i><span>UBMs</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'list_grupo_sanguineo' %}">
+                <i class="bi bi-circle"></i><span>Grupos Sanguineos</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'list_medalla' %}">
+                <i class="bi bi-circle"></i><span>Condecoraciones</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'list_categoria' %}">
+                <i class="bi bi-circle"></i><span>Categorias</span>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'list_unidad' %}">
+                <i class="bi bi-circle"></i><span>Unidades</span>
+              </a>
+            </li>
+            
+                      
+          </ul>
+        </li>
+        <!-- End Mantenedor Nav -->
+        {% endif %}
+
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#reservistas-nav" data-bs-toggle="collapse" href="#">
+            <i class="bi bi-person-plus"></i><span>Ingreso de Reservistas</span>
+            <i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="reservistas-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+            <li>
+              <a href="{% url 'list_reservista' %}">
+                <i class="bi bi-circle"></i><span>Listado</span>
+              </a>
+            </li>            
+            <li>
+              <a href="{% url 'profile_reservista-create' %}">
+                <i class="bi bi-circle"></i><span>Ingresar Reservistas</span>
+              </a>
+            </li>            
+          </ul>
+        </li>
+        <!-- End actos administrativos Nav -->
+
+        
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#gestion-nav" data-bs-toggle="collapse" href="#">
+              <i class="bi bi-archive"></i><span>Ingreso de Acto administrativos</span>
+              <i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="gestion-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+              <li>
+                <a href="{% url 'ingreso_resolucion' %}">
+                    <i class="bi bi-circle"></i><span>Ingreso de Actos Administrativos</span>
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'list_res_condecoracion' %}">
+                    <i class="bi bi-circle"></i><span>Resolución de Medallas</span>
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'list_res_ascenso' %}">
+                    <i class="bi bi-circle"></i><span>Nombramientos y Ascensos</span>
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'list_res_escalafon' %}">
+                    <i class="bi bi-circle"></i><span>Cambio de Escalafón</span>
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'list_res_institucion' %}">
+                    <i class="bi bi-circle"></i><span>Cambios de Institución</span>
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                    <i class="bi bi-circle"></i><span>Altas y Bajas</span>
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                    <i class="bi bi-circle"></i><span>Cambios de UBM</span>
+                </a>
+              </li>  
+          </ul>
+        </li>
+
+        {% if user.is_admin or user.is_divper %}
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#usuarios-nav" data-bs-toggle="collapse" href="#">
+              <i class="bi bi-people"></i><span>Administración de Usuarios</span>
+              <i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="usuarios-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+              <li>
+              <a href="{% url 'user_list' %}">
+                  <i class="bi bi-circle"></i><span>Usuarios</span>
+              </a>
+              </li>
+              <li>
+              <a href="{% url 'user_create' %}">
+                  <i class="bi bi-circle"></i><span>Crear Usuario</span>
+              </a>
+              </li>
+              
+          </ul>
+        </li>
+        {% endif %}
+       
+
+        <li class="nav-heading">Pages</li>
+
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="{% url 'faq' %}">
+            <i class="bi bi-question-circle"></i>
+            <span>Preguntas Frecuentes</span>
+          </a>
+        </li>
+        <!-- End F.A.Q Page Nav -->
+
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="{% url 'contact' %}">
+            <i class="bi bi-envelope"></i>
+            <span>Contactanos</span>
+          </a>
+        </li>
+        <!-- End Contact Page Nav -->
+
+        {% if user.is_staff or user.is_admin %}
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="{% url 'admin:login' %}">
+            <i class="bi bi-tools"></i>
+            <span>Administrador</span>
+          </a>
+        </li>
+        <!-- End django admin Page Nav -->
+        {% endif %}
+
+        <li class="nav-item">
+          <form action="{% url 'logout' %}" method="post" style="display: inline">
+            {% csrf_token %}
+            <button type="submit" class="nav-link collapsed">
+                <i class="bi bi-box-arrow-in-right"></i>
+                <span>Cerrar sesión</span>
+            </button>
+          </form>
+        </li>
+      </ul>
+    </aside>
+    <!-- End Sidebar-->
+
+
+    <!-- ======== Start content ===========-->
+    {% block content %} {% endblock %}
+    <!-- ======== end content ===========-->
+
+
+
+    <!-- ======= Footer ======= -->
+    <footer id="footer" class="footer">
+      <div class="copyright">
+        &copy; Designed by <strong><span>ChambaNet</span></strong
+        >. All Rights Reserved
+      </div>
+    </footer>
+    <!-- End Footer -->
+
+    <!--Inactivity time
+    <script src="{% static 'core/js/inactivityTime.js' %}"></script>-->
+
+    <!-- Vendor JS Files -->
+    <script src="{% static 'core/vendor/apexcharts/apexcharts.min.js' %}"></script>
+    <script src="{% static 'core/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'core/vendor/chart.js/chart.umd.js' %}"></script>
+    <script src="{% static 'core/vendor/quill/quill.js' %}"></script>
+    <script src="{% static 'core/vendor/tinymce/tinymce.min.js' %}"></script>
+    <script src="{% static 'core/vendor/php-email-form/validate.js' %}"></script>
+    <script src="{% static 'core/js/echarts.min.js' %}"></script>
+
+    <!-- Template Main JS File -->
+    <script src="{% static 'core/js/main.js' %}"></script>
+
+ 
+
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

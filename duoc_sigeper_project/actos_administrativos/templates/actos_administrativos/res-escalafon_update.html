@@ -1,0 +1,142 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block tittle %}Cambio de Escalafón | Update{% endblock %}
+
+{% block content %}
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Actualizar Resolución de Cambio de Escalafón<h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'ingreso_resolucion' %}?tab=res_ascenso">Actos Administrativos</a></li>
+        <li class="breadcrumb-item active">Actualizar Resolución de Cambio de Escalafón</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Resolución de Cambio de Escalafón</h5>
+                        
+                        <div class="card row pt-3 pb-3 m-3">
+
+                        <div class="card-body">
+                            <h5 class="card-title">Actualizar información</h5>
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {% csrf_token %}
+                                {% csrf_token %}
+                                {% if messages %}                                
+                                        {% for message in messages %}
+                                            <p class="alert alert-success text-center ms-3 me-3">{{ message }}</p>
+                                        {% endfor %}                                
+                                {% endif %}   
+                                <div class="row mb-3">
+                                    <label for="{{ form.fecha_resolucion.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Fecha Resolución</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ form.fecha_resolucion.name }}" type="date" class="form-control" 
+                                            id="{{ form.fecha_resolucion.id_for_label }}" 
+                                            value="{{ form.fecha_resolucion.value|date:'Y-m-d' }}" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="{{ form.numero_resolucion.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Número de Resolución</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ form.numero_resolucion.name }}" type="text" class="form-control" id="{{ form.numero_resolucion.id_for_label }}" value="{{ form.numero_resolucion.value }}" required>
+                                        <small class="form-text text-muted">Formato permitido: ingrese solo el número de Decreto o Resolución</small>
+                                    </div>
+                                </div> 
+                                <div class="row mb-3">
+                                    <label for="id_reservista" class="col-md-4 col-lg-3 col-form-label">Reservista</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select class="form-control" id="id_reservista" name="id_reservista">
+                                            <option value="">Seleccione...</option>
+                                            {% for reservista in reservistas %}
+                                                <option value="{{ reservista.id }}" 
+                                                    {% if form.instance.id_reservista and form.instance.id_reservista.id == reservista.id %}
+                                                        selected
+                                                    {% endif %}>
+                                                    {{ reservista.nombre }} {{ reservista.apellido_paterno }} {{ reservista.apellido_materno }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>   
+                                <div class="row mb-3">
+                                    <label for="id_uac" class="col-md-4 col-lg-3 col-form-label">Grado</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select class="form-control" id="id_grado" name="grado">
+                                            <option value="">Seleccione...</option>
+                                            {% for grado in grados %}
+                                                <option value="{{ grado.id }}" {% if form.instance.grado and form.instance.grado.id == grado.id %}selected{% endif %}>
+                                                    {{ grado.grado_sigla }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>       
+                                    </div>
+                                </div>  
+                                <div class="row mb-3">
+                                    <label for="Escalafon_proveniente" class="col-md-4 col-lg-3 col-form-label">Escalafón Proveniente</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select class="form-control" id="Escalafon_proveniente" name="Escalafon_proveniente">
+                                            <option value="">Seleccione...</option>
+                                            {% for arma in armas %}
+                                                <option value="{{ arma.id }}" {% if form.instance.Escalafon_proveniente and form.instance.Escalafon_proveniente.id == arma.id %}selected{% endif %}>
+                                                    {{ arma.nombre }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div> 
+                                <div class="row mb-3">
+                                    <label for="Escalafon_destino" class="col-md-4 col-lg-3 col-form-label">Escalafón Destino</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select class="form-control" id="Escalafon_destino" name="Escalafon_destino">
+                                            <option value="">Seleccione...</option>
+                                            {% for arma in armas %}
+                                                <option value="{{ arma.id }}" {% if form.instance.Escalafon_destino and form.instance.Escalafon_destino.id == arma.id %}selected{% endif %}>
+                                                    {{ arma.nombre }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label for="{{ form.resolucion.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Cargar Decreto</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input class="form-control" type="file" id="{{ form.resolucion.id_for_label }}" name="{{ form.resolucion.name }}" accept=".pdf">
+                                        <small class="form-text text-muted">Formato permitido: PDF. Tamaño máximo: 2MB.</small>
+                                        {% if form.resolucion.errors %}
+                                            <div class="text-danger">
+                                                {{ form.resolucion.errors|join:", " }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div> 
+                                
+                                  
+                                <button type="submit" class="btn btn-primary">Actualizar</button>
+                                <a href="{% url 'list_res_escalafon' %}" class="btn btn-success ">Ver listado</a>
+                            </form>
+                        </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+ 
+
+</main><!-- End #main -->
+
+{% endblock %}
+

@@ -1,0 +1,93 @@
+{% extends "core/base.html" %} {% load static %}
+{% block tittle %}Cambio Escalafón{% endblock %}
+
+{% block content %} 
+<main id="main" class="main">
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Resoluciones de cambio de Escalafón</h5>
+            <p>Nómina de las resoluciones y decretos de cambio de Escalafón ingresados en el SIGEPER</p>
+            
+            <div class="card">
+                <div class="card-body">
+                  <input type="text" id="searchInput" class="form-control mb-3 mt-3" placeholder="Buscar resolucion...">
+                  <!-- Table with stripped rows -->
+                  <table id="tabla-escalafon"  class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th><b>#</b></th>
+                        <th><b>Número resolución</b></th>
+                        <th><b>Fecha resolución</b></th>
+                        <th><b>Esfon Proveniente</b></th>
+                        <th><b>Esfón Destino</b></th>
+                        <th><b>Reservista</b></th>
+                        <th>Acciones</th>  
+                      </tr>
+                    </thead>
+                    <tbody>                  
+                      {% for x in escalafon %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ x.numero_resolucion }}</td>
+                            <td>{{ x.fecha_resolucion }}</td>
+                            <td>{{ x.Escalafon_proveniente }}</td>
+                            <td>{{ x.Escalafon_destino }}</td>
+                            <td class="text-capitalize">{{ x.id_reservista.grado.grado_sigla }} {{ x.id_reservista.apellido_paterno }}</td>
+                            <td>
+                                <a href="{% url 'update_res_escalafon' x.id %}" method="POST">
+                                    <button type="submit" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                </a>
+                                <a href="{% url 'delete_res_escalafon' x.id %}" method="POST">
+                                    <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </a>
+                                {% if x.resolucion %}
+                                <a href="{% url 'descargar_documento' 'ResolucionCambioEscalafon' x.pk %}" class="btn btn-success btn-sm" title="descargar">
+                                    <i class="bi bi-cloud-download"></i>
+                                </a>
+                                {% else %}
+                                <button class="btn btn-secondary btn-sm" disabled title="No hay documento disponible">
+                                    <i class="bi bi-cloud-download"></i>
+                                </button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                      {% endfor %}                               
+                      </tbody>
+                  </table>
+                  <!-- End Table with stripped rows -->
+                  </div>                  
+                </div>                  
+              </div> <!--end card-->            
+          </div>
+          <div class="mt-4 d-flex justify-content-end">
+            <a href="{% url 'ingreso_resolucion' %}?tab=res_escalafon" class="btn btn-success m-1">Ingresar nueva resolución</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+</main><!-- End #main -->
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Configuración del cuadro de búsqueda
+    $('#searchInput').on('input', function() {
+        const searchText = $(this).val().toLowerCase();
+        $('#tabla-escalafon tbody tr').filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
+        });
+    });
+});
+</script>
+{% endblock %}

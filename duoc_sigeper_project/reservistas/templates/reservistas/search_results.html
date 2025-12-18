@@ -1,0 +1,190 @@
+{% extends "core/base.html" %}
+{% load static %} 
+{% block tittle %}Reservista{% endblock %}
+
+{% block content %} 
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Búsqueda de Reservistas</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                <li class="breadcrumb-item">Gestion de Reserva</li>
+                <li class="breadcrumb-item active">Resultado de Búsqueda</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Resultados de Búsqueda de Reservistas</h5>                                                    
+                        <div class="card pt-3">
+                            <div class="card-body">
+
+                                {% if reservistas %}
+                                    <!-- Table with stripped rows -->
+                                    <table id="tabla-reservista" class="table table-responsive table-striped align-middle">
+                                        <thead>
+                                            <tr>
+                                                <th class=""><b>#</b></th>
+                                                <th class=""><b>Foto</b></th>
+                                                <th class=""><b>RUN</b></th>
+                                                <th class=""><b>Grado</b></th>
+                                                <th class=""><b>Nombre</b></th>
+                                                <th class=""><b>UBM</b></th>
+                                                <th class=""><b>UAC</b></th>
+                                                <th class="">Acciones</th>      
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for x in reservistas %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>
+                                                    {% if x.foto %}
+                                                    <img src="{{ x.foto.url }}" alt="{{ x.nombre }}" height="50px">
+                                                    {% else %}
+                                                    <img src="{% static 'core/img/soldier-(1).png' %}" alt="{{ x.nombre }}" height="50px">
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <a href="{% url 'profile_reservista' x.id %}">{{ x.run }}-{{x.dv}}</a>
+                                                </td>
+                                                <td>{{ x.grado.grado_sigla }}</td>
+                                                <td class="text-capitalize">{{ x.apellido_paterno }} {{ x.apellido_materno }} {{ x.nombre }}</td>
+                                                <td> 
+                                                    {% if x.ubm.imagen %}
+                                                    <img src="{{ x.ubm.imagen.url }}" alt="{{ x.ubm.nombre }}" title="{{ x.ubm.nombre }}" height="50px">
+                                                    {{ x.ubm.ubm_sigla }}
+                                                    {% else %}
+                                                    {{ x.ubm.ubm_sigla }}
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if x.uac.imagen %}
+                                                    <img src="{{ x.uac.imagen.url }}" alt="{{ x.uac.nombre }}" title="{{ x.uac.nombre }}" height="50px">
+                                                    {{ x.uac.uac_sigla }}
+                                                    {% else %}
+                                                    {{ x.uac.uac_sigla }}   
+                                                    {% endif %}
+                                                </td>
+                                                    
+                                                    
+                                                <td>
+                                                    <a href="{% url 'profile_reservista-update' x.id %}" method="POST">
+                                                        <button type="submit" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
+                                                            <i class="bi bi-pencil-square"></i>
+                                                        </button>
+                                                    </a>
+
+                                                    <a href="{% url 'profile_reservista-delete' x.id %}" method="POST">
+                                                        <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <!-- End Table with stripped rows --> 
+                                {% else %}
+                                    <div class="alert alert-warning" role="alert">
+                                        No se encontraron reservistas que coincidan con la búsqueda.
+                                    </div>
+                                {% endif %}                                    
+                            </div>
+                            <!-- Paginación -->
+                            {% if is_paginated %}
+                                <nav aria-label="Page navigation">
+                                <ul class="pagination justify-content-center p-3">
+
+                                    <!-- Ir a Primera Página (<<) -->
+                                    {% if page_obj.number > 1 %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=1" title="Primera página" aria-label="First">
+                                        <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">&laquo;</span>
+                                    </li>
+                                    {% endif %}
+
+                                    <!-- Anterior (<) -->
+                                    {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Anterior">
+                                        <span aria-hidden="true">&lsaquo;</span>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">&lsaquo;</span>
+                                    </li>
+                                    {% endif %}
+
+                                    <!-- Números de página centrales (3 centrados en la actual) -->
+                                    {% for num in paginator.page_range %}
+                                    {% if num >= page_obj.number|add:'-1' and num <= page_obj.number|add:'1' %}
+                                        {% if num == page_obj.number %}
+                                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                                        {% else %}
+                                        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                                        {% endif %}
+                                    {% endif %}
+                                    {% endfor %}
+
+                                    <!-- Siguiente (>) -->
+                                    {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Siguiente">
+                                        <span aria-hidden="true">&rsaquo;</span>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">&rsaquo;</span>
+                                    </li>
+                                    {% endif %}
+
+                                    <!-- Ir a Última Página (>>) -->
+                                    {% if page_obj.number < paginator.num_pages %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ paginator.num_pages }}" title="Última página" aria-label="Last">
+                                        <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">&raquo;</span>
+                                    </li>
+                                    {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!--end card-->
+                </div>
+                <div class="mt-4 d-flex justify-content-end">
+                    <a href="{% url 'profile_reservista-create' %}" class="btn btn-success m-1">Ingresar nuevo Reservista</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main><!-- End #main -->
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+{% endblock %}

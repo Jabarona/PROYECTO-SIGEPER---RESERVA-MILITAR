@@ -1,0 +1,109 @@
+{% extends "core/base.html" %} {% load static %}
+{% block tittle %}Perfil{% endblock %}
+
+{% block content %} 
+
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Perfil</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+        <li class="breadcrumb-item">Usuario</li>
+        <li class="breadcrumb-item active">Perfil</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section profile">
+    <div class="row">
+
+      <!-- foto de perfil -->
+      <div class="col-xl-4">
+        <div class="card">
+          <div class="card-body profile-card pt-4 d-flex flex-column align-items-center text-center">
+            {% if user.foto %}
+              <img src="{{ user.foto.url }}" alt="Profile" class="rounded-circle border" height="200px">
+            {% else %}
+              <img src="{% static 'core/img/soldier-(1).png' %}" alt="Profile" class="rounded-circle" height="200px">
+            {% endif %}               
+            <h2 class="text-capitalize">{{ user.nombre }} {{ user.apellido_paterno }} {{ user.apellido_materno }}</h2>
+            {% if user.grado.imagen %}
+            <img src="{{ user.grado.imagen.url }}" height="50px" >
+            {% else %}
+            <h3>{{user.grado.grado}}</h3>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Descripcion general -->
+      <div class="col-xl-8">
+        <div class="card">
+          <div class="card-body pt-3">
+            <!-- Bordered Tabs -->
+            <ul class="nav nav-tabs nav-tabs-bordered">
+              <li class="nav-item">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview"><strong>Detalles del Perfil</strong></button>
+              </li>
+            </ul>
+          <div class="tab-content pt-2">
+
+          <div class="tab-pane fade show active profile-overview  pt-3" id="profile-overview">                
+            
+
+              <div class="row">
+                <div class="col-lg-3 col-md-4 label ">Nombre</div>
+                <div class="col-lg-9 col-md-8 text-capitalize">{{ user.nombre }}</div>
+              </div>
+
+              <div class="row">
+                <div class="col-lg-3 col-md-4 label">Apellidos</div>
+                <div class="col-lg-9 col-md-8 text-capitalize">{{ user.apellido_paterno }} {{ user.apellido_materno }}</div>
+              </div>
+
+              <div class="row">
+                <div class="col-lg-3 col-md-4 label">Grado</div>
+                <div class="col-lg-9 col-md-8 text-capitalize">{{ user.grado }}</div>
+              </div>
+
+              <div class="row">
+                <div class="col-lg-3 col-md-4 label">Unidad</div>
+                {% if not user.unidad %}
+                  <div class="col-lg-9 col-md-8 text-capitalize">Sin Información</div>
+                {% else %}
+                  <div class="col-lg-9 col-md-8 text-capitalize">{{ user.unidad }}</div>
+                {% endif %}
+              </div>
+
+              <div class="row">
+                <div class="col-lg-3 col-md-4 label">Citofono</div>
+                {% if not user.citofono %}
+                  <div class="col-lg-9 col-md-8">Sin Información</div>
+                {% else %}
+                  <div class="col-lg-9 col-md-8">{{ user.citofono }}</div>
+                {% endif %}
+              </div>
+
+              <div class="row">
+                <div class="col-lg-3 col-md-4 label">Correo</div>
+                <div class="col-lg-9 col-md-8">{{ user.correo }}</div>
+              </div>
+
+              <div class="row">
+                <a href="{% url 'profile_change_password' %}" class="btn bg-color1 "><strong>Cambiar Contraseña</strong></a>
+                <a href="{% url 'profile_edit' %}" class="btn bg-color3 mt-2"><strong>Actualizar Perfil</strong></a>                
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  
+
+</main><!-- End #main -->
+
+{% endblock %} 

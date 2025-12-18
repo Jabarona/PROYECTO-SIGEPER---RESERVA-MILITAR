@@ -1,0 +1,172 @@
+{% extends "core/base.html" %} {% load static %}
+{% block tittle %}UBM {% endblock %}
+
+{% block content %} 
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Listado de Unidades Bases de Movilización</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'mantenedor' %}?tab=ubm">Mantenedor</a></li>
+          <li class="breadcrumb-item active">UBM</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">UBM</h5>
+              <p>Nómina de las UBM que puedes encontrar en el SIGEPER</p>
+
+              <div class="card">
+                <div class="card-body">
+                  <input type="text" id="searchInput" class="form-control mb-3 mt-3" placeholder="Buscar Unidad Base de Movilización...">
+                  <!-- Table with stripped rows -->
+                  <table id="tabla-ubm"  class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th><b>#</b></th>
+                        <th><b>Escudo</b></th>
+                        <th><b>UBM</b></th>
+                        <th><b>Escalón Superior</b></th>
+                        <th>Acciones</th>      
+                      </tr>
+                    </thead>
+                    <tbody>                  
+                      {% for x in ubm %}
+                        <tr>
+                          <td>{{ forloop.counter }}</td>
+                          <td>{% if x.imagen %}
+                              <img src="{{ x.imagen.url }}" alt="{{ x.nombre }}" height="50px">
+                              {% else %}
+                                Sin Imagen
+                              {% endif %}
+                          </td>
+                          <td> {{x.nombre}} </td>
+                          <td> {{x.escalon_superior}} </td>
+                          <td>
+                            <a href="{% url 'update_ubm' x.id %}" method="POST" >                                                 
+                              <button type="submit" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
+                                <i class="bi bi-pencil-square"></i>                                                                     
+                              </button>
+                            </a>
+
+                            <a href="{% url 'delete_ubm' x.id %}" method="POST" >                                                 
+                              <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">
+                                <i class="bi bi-trash"></i>                                                                     
+                              </button>
+                            </a>                              
+                          </td>                   
+                        </tr> 
+                        {% endfor %}                                 
+                      </tbody>
+                  </table>
+                  <!-- End Table with stripped rows -->
+                  </div>
+                  <!-- Paginación -->
+                  {% if is_paginated %}
+                    <nav aria-label="Page navigation">
+                      <ul class="pagination justify-content-center p-3">
+
+                        <!-- Ir a Primera Página (<<) -->
+                        {% if page_obj.number > 1 %}
+                          <li class="page-item">
+                            <a class="page-link" href="?page=1" title="Primera página" aria-label="First">
+                              <span aria-hidden="true">&laquo;</span>
+                            </a>
+                          </li>
+                        {% else %}
+                          <li class="page-item disabled">
+                            <span class="page-link">&laquo;</span>
+                          </li>
+                        {% endif %}
+
+                        <!-- Anterior (<) -->
+                        {% if page_obj.has_previous %}
+                          <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Anterior">
+                              <span aria-hidden="true">&lsaquo;</span>
+                            </a>
+                          </li>
+                        {% else %}
+                          <li class="page-item disabled">
+                            <span class="page-link">&lsaquo;</span>
+                          </li>
+                        {% endif %}
+
+                        <!-- Números de página centrales (3 centrados en la actual) -->
+                        {% for num in paginator.page_range %}
+                          {% if num >= page_obj.number|add:'-1' and num <= page_obj.number|add:'1' %}
+                            {% if num == page_obj.number %}
+                              <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                            {% else %}
+                              <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                            {% endif %}
+                          {% endif %}
+                        {% endfor %}
+
+                        <!-- Siguiente (>) -->
+                        {% if page_obj.has_next %}
+                          <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Siguiente">
+                              <span aria-hidden="true">&rsaquo;</span>
+                            </a>
+                          </li>
+                        {% else %}
+                          <li class="page-item disabled">
+                            <span class="page-link">&rsaquo;</span>
+                          </li>
+                        {% endif %}
+
+                        <!-- Ir a Última Página (>>) -->
+                        {% if page_obj.number < paginator.num_pages %}
+                          <li class="page-item">
+                            <a class="page-link" href="?page={{ paginator.num_pages }}" title="Última página" aria-label="Last">
+                              <span aria-hidden="true">&raquo;</span>
+                            </a>
+                          </li>
+                        {% else %}
+                          <li class="page-item disabled">
+                            <span class="page-link">&raquo;</span>
+                          </li>
+                        {% endif %}
+
+                      </ul>
+                    </nav>
+                  {% endif %}                  
+                </div>                  
+              </div> <!--end card-->            
+            <div class="mt-4 d-flex justify-content-end">
+              <a class="btn btn-success mt-3 mb-3 mx-3" href="{% url 'mantenedor' %}?tab=ubm" role="button">Ingresar nuevo</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+</main><!-- End #main -->
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static "core/js/tab_mantenedor.js" %}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Configuración del cuadro de búsqueda
+    $('#searchInput').on('input', function() {
+        const searchText = $(this).val().toLowerCase();
+        $('#tabla-ubm tbody tr').filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "core/base.html" %} {% load static %}
+{% block tittle %}Contacto{% endblock %}
+
+{% block content %} 
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Contacto</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+          <li class="breadcrumb-item">Páginas</li>
+          <li class="breadcrumb-item active">Contacto</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section contact">
+
+      <div class="row gy-4 text-center justify-content-center pt-3">
+
+        <div class="col-xl-8">
+
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="info-box card">
+                <i class="bi bi-geo-alt"></i>
+                <h3>Dirección</h3>
+                <p> Av. Tupper 1725<br>Santiago Centro</p>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="info-box card">
+                <i class="bi bi-clock"></i>
+                <h3>Horarios</h3>
+                <p>Lunes a Viernes<br>08:00AM - 05:00PM</p>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="info-box card">
+                <i class="bi bi-telephone"></i>
+                <h3>Llámanos</h3>
+                <p>Opus 32256</p>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="info-box card">
+                <i class="bi bi-envelope"></i>
+                <h3>Email </h3>
+                <p>Reserva.Divper@Ejército.cl </p>
+              </div>
+            </div>
+          </div>
+
+        </div>       
+
+      </div>
+
+    </section>
+
+  </main><!-- End #main -->
+
+  {% endblock %}

@@ -1,0 +1,160 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block tittle %}Condecoración | Update{% endblock %}
+{% block extra_css %}
+<link href="{% static 'core/vendor/choices/css/choices.min.css' %}" rel="stylesheet">
+<link href="{% static 'core/css/custom-choices.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Actualizar Resolución de Condecoración</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'ingreso_resolucion' %}?tab=res_condecoracion">Actos Administrativos</a></li>
+        <li class="breadcrumb-item active">Actualizar Resolución de Condecoración</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Actualizar Resolución de Condecoración</h5>
+                        
+                        <div class="card row pt-3 pb-3 m-3">
+
+                        <div class="card-body">
+                            <h5 class="card-title">Actualizar Resolución de Condecoración</h5>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <div class="row mb-3">
+                                    <label for="{{ form.fecha_resolucion.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Fecha Resolución</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ form.fecha_resolucion.name }}" type="date" class="form-control" 
+                                            id="{{ form.fecha_resolucion.id_for_label }}" 
+                                            value="{{ form.fecha_resolucion.value|date:'Y-m-d' }}" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="{{ form.numero_resolucion.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Número de Resolución</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ form.numero_resolucion.name }}" type="text" class="form-control" id="{{ form.numero_resolucion.id_for_label }}" value="{{ form.numero_resolucion.value }}" required>
+                                        <small class="form-text text-muted">Formato permitido: ingrese solo el número de Decreto o Resolución</small>
+                                    </div>
+                                </div> 
+                                <div class="row mb-3">
+                                    <label for="{{ form.fecha_otorgamiento.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Fecha de Otorgamiento</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ form.fecha_otorgamiento.name }}" type="date" class="form-control" 
+                                            id="{{ form.fecha_otorgamiento.id_for_label }}" 
+                                            value="{{ form.fecha_otorgamiento.value|date:'Y-m-d' }}" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="id_condecoracion" class="col-md-4 col-lg-3 col-form-label">Tipo de Condecoración</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select class="form-control" id="id_condecoracion" name="tipo_medalla">
+                                            <option value="">Seleccione...</option>                                           
+                                            {% for medalla in medallas %}
+                                                <option value="{{ medalla.id }}" {% if form.instance.tipo_medalla and form.instance.tipo_medalla.id == medalla.id %}selected{% endif %}>
+                                                    {{ medalla.nombre }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>       
+                                    </div>
+                                </div>                                   
+                                <div class="row mb-3">
+                                    <label for="id_reservista" class="col-md-4 col-lg-3 col-form-label">Reservista</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select id="id_reservista" name="id_reservista" class="form-select">
+                                            <option value="">Seleccione...</option>
+                                            {% for reservista in reservistas %}
+                                                <option value="{{ reservista.id }}" 
+                                                    {% if form.instance.id_reservista and form.instance.id_reservista.id == reservista.id %}selected{% endif %}>
+                                                    {{ reservista.apellido_paterno }} {{ reservista.apellido_materno }}, {{ reservista.nombre }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Actualizar</button>
+                                <a href="{% url 'list_res_condecoracion' %}" class="btn btn-success">Ver listado</a>
+                            </form>
+                        </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+ 
+
+</main><!-- End #main -->
+
+{% endblock %}
+
+
+{% block extra_js %}    
+
+    <script src="{% static 'core/vendor/choices/js/choices.min.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof Choices !== 'undefined') {
+                const selectElement = document.getElementById('id_reservista');
+                if (selectElement) {
+                    const choices = new Choices(selectElement, {
+                        searchEnabled: true,
+                        searchPlaceholderValue: 'Buscar...',
+                        itemSelectText: '',
+                        noResultsText: 'No se encontraron resultados',
+                        placeholder: true,
+                        placeholderValue: 'Seleccione...',
+                        removeItemButton: true,
+                        shouldSort: false,
+                        classNames: {
+                            containerOuter: 'choices',
+                            containerInner: 'choices__inner',
+                            input: 'choices__input',
+                            inputCloned: 'choices__input--cloned',
+                            list: 'choices__list',
+                            listItems: 'choices__list--multiple',
+                            listSingle: 'choices__list--single',
+                            listDropdown: 'choices__list--dropdown',
+                            item: 'choices__item',
+                            itemSelectable: 'choices__item--selectable',
+                            itemDisabled: 'choices__item--disabled',
+                            itemChoice: 'choices__item--choice',
+                            placeholder: 'choices__placeholder',
+                            group: 'choices__group',
+                            groupHeading: 'choices__heading',
+                            button: 'choices__button'
+                        },
+                        callbackOnInit: function() {
+                            // Mantener el valor preseleccionado si existe
+                            const selectedOption = selectElement.querySelector('option[selected]');
+                            if (selectedOption) {
+                                this.setChoiceByValue(selectedOption.value);
+                            }
+                        }
+                    });
+
+                    // Manejar la limpieza del valor
+                    selectElement.addEventListener('change', function(event) {
+                        if (!event.target.value) {
+                            choices.clearStore();
+                            choices.setChoiceByValue('');
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block tittle %}Grado | Update{% endblock %}
+
+{% block content %}
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Actualizar Grado</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+        <li class="breadcrumb-item">Mantenedor</li>
+        <li class="breadcrumb-item active">Actualizar Grado</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Grado</h5>
+                        
+                        <div class="card row pt-3 pb-3 m-3">
+
+                        <div class="card-body">
+                            <h5 class="card-title">Actualice la información de la Grado</h5>
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {% csrf_token %}
+                                {% if messages %}                                
+                                        {% for message in messages %}
+                                            <p class="alert alert-success text-center ms-3 me-3">{{ message }}</p>
+                                        {% endfor %}                                
+                                {% endif %}                                 
+                                <div class="row mb-3">
+                                    <label for="{{ form.grado.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Nombre</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ form.grado.name }}" type="text" class="form-control" id="{{ form.grado.id_for_label }}" value="{{ form.grado.value }}" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="{{ form.grado_sigla.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Abreviación</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ form.grado_sigla.name }}" type="text" class="form-control" id="{{ form.grado_sigla.id_for_label }}" value="{{ form.grado_sigla.value }}" required>
+                                    </div>
+                                </div>   
+                                <div class="row mb-3">
+                                    <label for="{{ form.imagen.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Cargar Imagen</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input class="form-control" type="file" id="{{ form.imagen.id_for_label }}" name="{{ form.imagen.name }}" accept=".png, .jpg, .jpeg">
+                                        <small class="form-text text-muted">Formato permitido: PNG. Tamaño máximo: 2MB.</small>
+                                        {% if form.imagen.errors %}
+                                            <div class="text-danger">
+                                                {{ form.imagen.errors|join:", " }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                  
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a href="{% url 'list_grado' %}" class="btn btn-success ">Ver listado</a>
+                            </form>
+                        </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+ 
+
+</main><!-- End #main -->
+
+{% endblock %}
+

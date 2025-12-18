@@ -1,0 +1,376 @@
+{% extends "core/base.html" %} {% load static %}
+{% block tittle %}Inicio{% endblock %}
+{% block extra_css %}
+<style>
+  .echart-responsive {
+      width: 100%;
+      min-height: 350px;   /* Ajusta el alto a tu gusto */
+      height: 400px;       /* Puedes ajustar a lo que más te acomode */
+      max-width: 100vw;
+      margin-bottom: 1rem;
+  }
+</style>
+
+
+{% endblock %}
+
+{% block content %} 
+
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Dashboard</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+        <li class="breadcrumb-item active">Dashboard</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section dashboard">
+    <div class="row">
+
+      <!-- Left side columns -->
+      <div class="col-lg-8">
+        <div class="row">
+
+          <!-- Cantidad de reservistas -->
+          <div class="col-xxl-4 col-md-6">
+            <div class="card info-card rva-card">
+              <div class="card-body">
+                <h5 class="card-title">Reservistas </h5>
+
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                    <i class="bi bi-people"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6>{{ total_reservistas }}</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!-- End Cantidad de reservistas -->
+
+          <!-- Cantidad de hommbres  -->
+          <div class="col-xxl-4 col-md-6">
+            <div class="card info-card men-card">
+              <div class="card-body">
+                <h5 class="card-title">Hombres <span>| </span></h5>
+
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                    <i class="bi bi-person-check-fill"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6>{{ total_reservistas_masculino }}</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!-- End Cantidad de hommbres -->
+
+          <!-- Cantidad de mujeres -->
+          <div class="col-xxl-4 col-xl-12">
+            <div class="card info-card women-card">
+              <div class="card-body">
+                <h5 class="card-title">Mujeres <span>| </span></h5>
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                    <i class="bi bi-person-check-fill"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6>{{ total_reservistas_femenino }}</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!-- End Cantidad de mujeres -->
+
+          <!-- Gráfico de barra por grados -->
+          <div class="col-12 mb-4">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Cantidad de Reservistas por Grado</h5>
+                <div id="reservistasPorGradoChart" class="echart-responsive"></div>            
+                <!-- Incluye Echarts -->
+                <script src="{% static 'core/js/echarts.min.js' %}"></script>
+                <script src="{% static 'core/js/macarons.js' %}"></script>                            
+                <!-- Script de Echarts -->
+                <script>
+                    var chartDom = document.getElementById('reservistasPorGradoChart');
+                    var myChart = echarts.init(chartDom, 'macarons' );
+            
+                    var option = {
+                        xAxis: {
+                            type: 'category',
+                            data: {{ grados|safe }},  // Lista de grados
+                            axisLabel: {
+                              fontSize: 7, // Ajusta el tamaño de la fuente del eje X
+                              align: 'center' // Centra las etiquetas del eje X
+                            }
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: [{
+                            data: {{ cantidades|safe }},  // Lista de cantidades
+                            type: 'bar',
+                            showBackground: true,
+                            backgroundStyle: {
+                                color: 'rgba(180, 180, 180, 0.2)'
+                            }
+                        }],
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'shadow'
+                            }
+                        }
+                    };            
+                    // Renderiza el gráfico con la opción configurada
+                    myChart.setOption(option);
+                </script>
+              </div>
+            </div>
+          </div><!-- End Gráfico de barra por grados -->
+
+          <!-- Gráfico de barra por arma -->
+          <div class="col-12 mb-4">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Cantidad de Reservistas por Arma</h5>
+                <div id="reservistasArmaChart" class="echart-responsive"></div>            
+                
+                <!-- Incluye Echarts -->
+                <script src="{% static 'core/js/echarts.min.js' %}"></script>
+                <script src="{% static 'core/js/macarons.js' %}"></script>                            
+                
+                <!-- Script de Echarts -->
+                <script>
+                  var chartDom = document.getElementById('reservistasArmaChart');
+                  var myChart = echarts.init(chartDom, 'macarons');
+                  
+                  var option = {
+                    xAxis: {
+                      type: 'category',
+                      data: {{ arma_labels|safe }},  // Lista de armas
+                      axisLabel: {
+                        fontSize: 8, // Ajusta el tamaño de la fuente del eje X
+                        align: 'center' // Centra las etiquetas del eje X
+                      }
+                    },
+                    yAxis: {
+                      type: 'value'
+                    },
+                    series: [{
+                      data: {{ arma_counts|safe }},  // Lista de cantidades
+                      type: 'bar',
+                      showBackground: true,
+                      backgroundStyle: {
+                        color: 'rgba(180, 180, 180, 0.2)'
+                      }
+                    }],
+                    tooltip: {
+                      trigger: 'axis',
+                      axisPointer: {
+                        type: 'shadow'
+                      }
+                    }
+                  };
+
+                  // Renderiza el gráfico con la opción configurada
+                  myChart.setOption(option);
+                </script>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gráfico de barra por UAC -->
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Cantidad de Reservistas por UAC</h5>
+                <div id="reservistasUacChart" class="echart-responsive"></div>            
+
+                <!-- Incluye Echarts -->
+                <script src="{% static 'core/js/echarts.min.js' %}"></script>
+                <script src="{% static 'core/js/macarons.js' %}"></script>                            
+                
+                <!-- Script de Echarts -->
+                <script>
+                  var chartDom = document.getElementById('reservistasUacChart');
+                  var myChart = echarts.init(chartDom, 'macarons');
+                  
+                  var option = {
+                    xAxis: {
+                      type: 'category',
+                      data: {{ uacs_labels|safe }},  // Lista de UACs
+                      axisLabel: {
+                        fontSize: 8, // Ajusta el tamaño de la fuente del eje X
+                        align: 'center' // Centra las etiquetas del eje X
+                      }
+                    },
+                    yAxis: {
+                      type: 'value'
+                    },
+                    series: [{
+                      data: {{ uacs_counts|safe }},  // Lista de cantidades
+                      type: 'bar',
+                      showBackground: true,
+                      backgroundStyle: {
+                        color: 'rgba(180, 180, 180, 0.2)'
+                      }
+                    }],
+                    tooltip: {
+                      trigger: 'axis',
+                      axisPointer: {
+                        type: 'shadow'
+                      }
+                    }
+                  };
+
+                  // Renderiza el gráfico con la opción configurada
+                  myChart.setOption(option);
+                </script>
+              </div>
+            </div>
+          </div>
+
+
+
+        </div>
+      </div><!-- End Left side columns -->
+
+      <!-- Right side columns -->
+      <div class="col-lg-4">
+
+        <!-- Gráfico de torta por categoria -->
+        <div class="card">   
+          <div class="card-body">
+            <h5 class="card-title">Cantidad de Reservistas por Categoría</h5>
+            
+            <!-- Div para el gráfico de Echarts -->
+            <div id="categoriaChart" style="min-height: 400px;"></div>
+            
+            <!-- Incluye Echarts -->
+            <script src="{% static 'core/js/echarts.min.js' %}"></script>
+            <script src="{% static 'core/js/macarons.js' %}"></script>
+
+            <script>
+              var chartDom = document.getElementById('categoriaChart');
+              var myChart = echarts.init(chartDom, 'macarons');
+              
+              var categoriasLabels = {{ categorias_labels|safe }};
+              var categoriasCounts = {{ categorias_counts|safe }};
+              
+              var option = {
+                tooltip: {
+                  trigger: 'item'
+                },
+                legend: {
+                  top: '5%',
+                  left: 'center'
+                },
+                series: [
+                  {
+                    name: 'Reservistas',
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                      borderRadius: 10,
+                      borderColor: '#fff',
+                      borderWidth: 2
+                    },
+                    label: {
+                      show: false,
+                      position: 'center'
+                    },
+                    emphasis: {
+                      label: {
+                        show: true,
+                        fontSize: 30,
+                        fontWeight: 'bold'
+                      }
+                    },
+                    labelLine: {
+                      show: false
+                    },
+                    data: categoriasLabels.map(function(label, index) {
+                      return { value: categoriasCounts[index], name: label };
+                    })
+                  }
+                ]
+              };
+
+              option && myChart.setOption(option);
+            </script>
+          </div>
+        </div><!-- End gráfico torta por categoria -->
+
+
+        <!-- News & Updates Traffic -->
+        <div class="card">
+          <div class="filter">
+            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+              <li class="dropdown-header text-start">
+                <h6>Filter</h6>
+              </li>
+
+              <li><a class="dropdown-item" href="#">Today</a></li>
+              <li><a class="dropdown-item" href="#">This Month</a></li>
+              <li><a class="dropdown-item" href="#">This Year</a></li>
+            </ul>
+          </div>
+
+          <div class="card-body pb-0">
+            <h5 class="card-title">News &amp; Updates <span>| Today</span></h5>
+
+            <div class="news">
+              <div class="post-item clearfix">
+                <img src="{% static 'core/img/news-1.jpg' %}" alt="">
+                <h4><a href="#">Nihil blanditiis at in nihil autem</a></h4>
+                <p>Sit recusandae non aspernatur laboriosam. Quia enim eligendi sed ut harum...</p>
+              </div>
+
+              <div class="post-item clearfix">
+                <img src="{% static 'core/img/news-2.jpg' %}" alt="">
+                <h4><a href="#">Quidem autem et impedit</a></h4>
+                <p>Illo nemo neque maiores vitae officiis cum eum turos elan dries werona nande...</p>
+              </div>
+
+              <div class="post-item clearfix">
+                <img src="{% static 'core/img/news-3.jpg' %}" alt="">
+                <h4><a href="#">Id quia et et ut maxime similique occaecati ut</a></h4>
+                <p>Fugiat voluptas vero eaque accusantium eos. Consequuntur sed ipsam et totam...</p>
+              </div>
+
+              <div class="post-item clearfix">
+                <img src="{% static 'core/img/news-4.jpg' %}" alt="">
+                <h4><a href="#">Laborum corporis quo dara net para</a></h4>
+                <p>Qui enim quia optio. Eligendi aut asperiores enim repellendusvel rerum cuder...</p>
+              </div>
+
+              <div class="post-item clearfix">
+                <img src="{% static 'core/img/news-5.jpg' %}" alt="">
+                <h4><a href="#">Et dolores corrupti quae illo quod dolor</a></h4>
+                <p>Odit ut eveniet modi reiciendis. Atque cupiditate libero beatae dignissimos eius...</p>
+              </div>
+
+            </div><!-- End sidebar recent posts-->
+
+          </div>
+        </div><!-- End News & Updates -->
+
+      </div><!-- End Right side columns -->
+
+     
+
+  </section>
+
+</main><!-- End #main -->
+
+{% endblock %}

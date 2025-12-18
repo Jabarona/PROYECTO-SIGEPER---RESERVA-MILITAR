@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Sin Acceso</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{% static 'core/img/favicon.ico' %}" rel="icon" />
+  <link href="{% static 'core/img/logo_reserva.png' %}" rel="apple-touch-icon"/>
+
+  
+  <!-- Vendor CSS Files -->
+  <link rel="stylesheet" type="text/css" href="{% static 'core/vendor/bootstrap/css/bootstrap.min.css' %}" />
+  <link href="{% static 'core/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet"/>
+  <link href="{% static 'core/vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet"/>
+  <link href="{% static 'core/vendor/quill/quill.snow.css' %}" rel="stylesheet"/>
+  <link href="{% static 'core/vendor/quill/quill.bubble.css' %}" rel="stylesheet"/>
+  <link href="{% static 'core/vendor/remixicon/remixicon.css' %}" rel="stylesheet"/>
+
+  <!-- Template Main CSS File -->
+  <link href="{% static 'core/css/style.css' %}" rel="stylesheet" />
+
+</head>
+
+<body>
+
+  <main>
+    <div class="container">
+
+      <section class="section error-404 min-vh-100 d-flex flex-column align-items-center justify-content-center">
+        <h1 class="color1">404</h1>
+        <h2 class="color2">La página que estás buscando no existe</h2>
+        <a class="btn bg-color3" href="{% url 'index' %}">Volver al inicio</a>
+      </section>
+
+    </div>
+  </main><!-- End #main -->
+
+ 
+
+</body>
+
+</html>

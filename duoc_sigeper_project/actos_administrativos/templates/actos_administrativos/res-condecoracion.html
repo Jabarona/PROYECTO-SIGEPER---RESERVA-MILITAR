@@ -1,0 +1,85 @@
+{% extends "core/base.html" %} {% load static %}
+{% block tittle %}Medallas {% endblock %}
+
+{% block content %} 
+<main id="main" class="main">
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Resoluciones de Medallas</h5>
+            <p>Nómina de las medallas ingresadas en el SIGEPER</p>
+            
+            <div class="card">
+                <div class="card-body">
+                  <input type="text" id="searchInput" class="form-control mb-3 mt-3" placeholder="Buscar resolucion...">
+                  <!-- Table with stripped rows -->
+                  <table id="tabla-medalla"  class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th><b>#</b></th>
+                        <th><b>Número resolución</b></th>
+                        <th><b>fecha resolución</b></th>
+                        <th><b>fecha otorgamiento</b></th>
+                        <th><b>Condecoración</b></th>
+                        <th><b>Reservista</b></th>
+                        <th>Acciones</th>      
+                      </tr>
+                    </thead>
+                    <tbody>                  
+                      {% for x in medalla %}
+                        <tr>
+                          <td>{{ forloop.counter }}</td>
+                          <td> {{x.numero_resolucion}} </td>
+                          <td> {{x.fecha_resolucion|date:"d-M-Y"}} </td>
+                          <td> {{x.fecha_otorgamiento|date:"d-M-Y"}} </td>
+                          <td> {{x.tipo_medalla}} </td>
+                          <td class="text-capitalize"> {{x.id_reservista.grado.grado_sigla}} {{x.id_reservista.apellido_paterno}}</td>
+                          <td>
+                            <a href="{% url 'update_res_condecoracion' x.id %}" method="POST" >                                                 
+                              <button type="submit" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
+                                <i class="bi bi-pencil-square"></i>                                                                     
+                              </button>
+                            </a>
+
+                            <a href="{% url 'delete_res_condecoracion' x.id %}" method="POST" >                                                 
+                              <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar">
+                                <i class="bi bi-trash"></i>                                                                     
+                              </button>
+                            </a>                              
+                          </td>                   
+                        </tr> 
+                        {% endfor %}                                 
+                      </tbody>
+                  </table>
+                  <!-- End Table with stripped rows -->
+                  </div>                  
+                </div>                  
+              </div> <!--end card-->            
+          </div>
+          <div class="mt-4 d-flex justify-content-end">
+            <a href="{% url 'ingreso_resolucion' %}?tab=res_condecoracion" class="btn btn-success m-1">Ingresar nueva resolución</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+</main><!-- End #main -->
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Configuración del cuadro de búsqueda
+    $('#searchInput').on('input', function() {
+        const searchText = $(this).val().toLowerCase();
+        $('#tabla-medalla tbody tr').filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
+        });
+    });
+});
+</script>
+{% endblock %}

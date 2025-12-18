@@ -1,0 +1,278 @@
+{% extends "core/base.html" %} 
+{% load static %}
+{% block tittle %}Crear Usuario{% endblock %}
+{% block extra_css %}
+<link href="{% static 'core/vendor/choices/css/choices.min.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Crear Usuario</h1>
+        <nav>
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+            <li class="breadcrumb-item">Administración de Usuarios</li>
+            <li class="breadcrumb-item active">Crear Usuario</li>
+          </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+
+     <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Crear Nuevo Usuario</h5>
+
+                        <form method="POST" enctype="multipart/form-data" novalidate>
+                            {% csrf_token %}
+
+                            {% if messages %}
+                            <div class="container mt-3">
+                                {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            
+
+                            <!-- Nombre -->
+                            <div class="row mb-3 align-items-center">
+                                <label for="{{ form.nombre.id_for_label }}" class="col-sm-2 col-form-label">Nombre</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control {% if form.nombre.errors %}is-invalid{% endif %}"
+                                        id="{{ form.nombre.id_for_label }}" name="{{ form.nombre.name }}"
+                                        value="{{ form.nombre.value|default_if_none:'' }}">
+                                    {% if form.nombre.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.nombre.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Apellido Paterno -->
+                            <div class="row mb-3 align-items-center">
+                                <label for="{{ form.apellido_paterno.id_for_label }}" class="col-sm-2 col-form-label">Apellido Paterno</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control {% if form.apellido_paterno.errors %}is-invalid{% endif %}"
+                                        id="{{ form.apellido_paterno.id_for_label }}" name="{{ form.apellido_paterno.name }}"
+                                        value="{{ form.apellido_paterno.value|default_if_none:'' }}">
+                                    {% if form.apellido_paterno.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.apellido_paterno.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Apellido Materno -->
+                            <div class="row mb-3 align-items-center">
+                                <label for="{{ form.apellido_materno.id_for_label }}" class="col-sm-2 col-form-label">Apellido Materno</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control {% if form.apellido_materno.errors %}is-invalid{% endif %}"
+                                        id="{{ form.apellido_materno.id_for_label }}" name="{{ form.apellido_materno.name }}"
+                                        value="{{ form.apellido_materno.value|default_if_none:'' }}">
+                                    {% if form.apellido_materno.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.apellido_materno.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Correo -->
+                            <div class="row mb-3 align-items-center">
+                                <label for="{{ form.correo.id_for_label }}" class="col-sm-2 col-form-label">Correo</label>
+                                <div class="col-sm-10">
+                                    <input type="email" class="form-control {% if form.correo.errors %}is-invalid{% endif %}"
+                                        id="{{ form.correo.id_for_label }}" name="{{ form.correo.name }}"
+                                        value="{{ form.correo.value|default_if_none:'' }}">
+                                    {% if form.correo.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.correo.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Unidad (SELECT) -->
+                            <div class="row mb-3 align-items-center">
+                                <label class="col-sm-2 col-form-label" for="id_unidad">Unidad</label>
+                                <div class="col-sm-10">
+                                    <select class="form-select" id="id_unidad" name="unidad">
+                                        <option value="">Seleccione...</option>
+                                        {% for unidad in unidades %}
+                                        <option value="{{ unidad.id }}">{{ unidad.nombre }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+   
+                            <!-- Grado (SELECT) -->
+                            <div class="row mb-3 align-items-center">
+                                <label class="col-sm-2 col-form-label" for="id_grado">Grado</label>
+                                <div class="col-sm-10">
+                                    <select class="form-select" id="id_grado" name="grado">
+                                        <option value="">Seleccione...</option>
+                                        {% for grado in grados %}
+                                        <option value="{{ grado.id }}" >{{ grado.grado }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>  
+                            </div>
+
+                            <!-- Foto -->
+                            <div class="row mb-3 align-items-center">
+                                <label for="{{ form.foto.id_for_label }}" class="col-sm-2 col-form-label">Foto</label>
+                                <div class="col-sm-10">
+                                    <input type="file" class="form-control {% if form.foto.errors %}is-invalid{% endif %}"
+                                        id="{{ form.foto.id_for_label }}" name="{{ form.foto.name }}"
+                                        accept=".jpg, .jpeg, .png">
+                                    {% if form.foto.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.foto.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Citófono -->
+                            <div class="row mb-3 align-items-center">
+                                <label for="{{ form.citofono.id_for_label }}" class="col-sm-2 col-form-label">Citófono</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control {% if form.citofono.errors %}is-invalid{% endif %}"
+                                        id="{{ form.citofono.id_for_label }}" name="{{ form.citofono.name }}"
+                                        value="{{ form.citofono.value|default_if_none:'' }}">
+                                    {% if form.citofono.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.citofono.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        
+
+                            <!-- Perfiles -->
+                            <div class="row mb-3 align-items-center">
+                                <label class="col-sm-2 col-form-label">Perfiles</label>
+                                <div class="col-sm-10">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="{{ form.is_admin.id_for_label }}"
+                                            name="{{ form.is_admin.name }}" {% if form.is_admin.value %}checked{% endif %}>
+                                        <label class="form-check-label" for="{{ form.is_admin.id_for_label }}">Administrador</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="{{ form.is_divper.id_for_label }}"
+                                            name="{{ form.is_divper.name }}" {% if form.is_divper.value %}checked{% endif %}>
+                                        <label class="form-check-label" for="{{ form.is_divper.id_for_label }}">DIVPER</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="{{ form.is_uac.id_for_label }}"
+                                            name="{{ form.is_uac.name }}" {% if form.is_uac.value %}checked{% endif %}>
+                                        <label class="form-check-label" for="{{ form.is_uac.id_for_label }}">UAC</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="{{ form.is_ubm.id_for_label }}"
+                                            name="{{ form.is_ubm.name }}" {% if form.is_ubm.value %}checked{% endif %}>
+                                        <label class="form-check-label" for="{{ form.is_ubm.id_for_label }}">UBM</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="{{ form.is_lector.id_for_label }}"
+                                            name="{{ form.is_lector.name }}" {% if form.is_lector.value %}checked{% endif %}>
+                                        <label class="form-check-label" for="{{ form.is_lector.id_for_label }}">Lector</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-center pt-3">
+                                <button type="submit" class="btn bg-color3">Crear Usuario</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+  
+{% endblock %}
+
+
+
+{% block extra_js %}    
+  <script src="{% static 'core/vendor/choices/js/choices.min.js' %}"></script>
+  <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          if (typeof Choices !== 'undefined') {
+              const selectElement = document.getElementById('id_grado');
+              if (selectElement) {
+                  const choices = new Choices(selectElement, {
+                      searchEnabled: true,
+                      searchPlaceholderValue: 'Buscar...',
+                      itemSelectText: '',
+                      noResultsText: 'No se encontraron resultados',
+                      placeholder: true,
+                      placeholderValue: 'Seleccione...',
+                      shouldSort: false,
+                      removeItemButton: false,
+                      searchResultLimit: 20,
+                      position: 'bottom',
+                      classNames: {
+                          containerOuter: 'choices',
+                          containerInner: 'choices__inner',
+                          input: 'choices__input',
+                          inputCloned: 'choices__input--cloned',
+                          list: 'choices__list',
+                          listItems: 'choices__list--multiple',
+                          listSingle: 'choices__list--single',
+                          listDropdown: 'choices__list--dropdown',
+                          item: 'choices__item',
+                          itemSelectable: 'choices__item--selectable',
+                          itemDisabled: 'choices__item--disabled',
+                          itemChoice: 'choices__item--choice',
+                          placeholder: 'choices__placeholder',
+                          group: 'choices__group',
+                          groupHeading: 'choices__heading',
+                          button: 'choices__button'
+                      }
+                  });
+              }
+          }
+      });
+  </script>
+  <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          if (typeof Choices !== 'undefined') {
+              const selectElement = document.getElementById('id_unidad');
+              if (selectElement) {
+                  const choices = new Choices(selectElement, {
+                      searchEnabled: true,
+                      searchPlaceholderValue: 'Buscar...',
+                      itemSelectText: '',
+                      noResultsText: 'No se encontraron resultados',
+                      placeholder: true,
+                      placeholderValue: 'Seleccione...',
+                      shouldSort: false,
+                      removeItemButton: false,
+                      searchResultLimit: 20,
+                      position: 'bottom',
+                      classNames: {
+                          containerOuter: 'choices',
+                          containerInner: 'choices__inner',
+                          input: 'choices__input',
+                          inputCloned: 'choices__input--cloned',
+                          list: 'choices__list',
+                          listItems: 'choices__list--multiple',
+                          listSingle: 'choices__list--single',
+                          listDropdown: 'choices__list--dropdown',
+                          item: 'choices__item',
+                          itemSelectable: 'choices__item--selectable',
+                          itemDisabled: 'choices__item--disabled',
+                          itemChoice: 'choices__item--choice',
+                          placeholder: 'choices__placeholder',
+                          group: 'choices__group',
+                          groupHeading: 'choices__heading',
+                          button: 'choices__button'
+                      }
+                  });
+              }
+          }
+      });
+  </script>
+  
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block tittle %}Profesión | Update{% endblock %}
+
+{% block content %}
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Actualizar Profesión</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+        <li class="breadcrumb-item">Mantenedor</li>
+        <li class="breadcrumb-item active">Actualizar Profesión</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Profesión</h5>
+                        
+                        <div class="card row pt-3 pb-3 m-3">
+
+                        <div class="card-body">
+                            <h5 class="card-title">Actualice la información de la Profesión</h5>
+                            <form method="POST">
+                                {% csrf_token %}
+                                {% csrf_token %}
+                                {% if messages %}                                
+                                        {% for message in messages %}
+                                            <p class="alert alert-success text-center ms-3 me-3">{{ message }}</p>
+                                        {% endfor %}                                
+                                {% endif %}                                 
+                                <div class="row mb-3">
+                                    <label for="{{ form.nombre.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Nombre</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ form.nombre.name }}" type="text" class="form-control" id="{{ form.nombre.id_for_label }}" value="{{ form.nombre.value}}" required>
+                                    </div>
+                                </div>                                 
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a href="{% url 'list_profesion' %}" class="btn btn-success ">Ver listado</a>
+                            </form>
+                        </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+ 
+
+</main><!-- End #main -->
+
+{% endblock %}
+

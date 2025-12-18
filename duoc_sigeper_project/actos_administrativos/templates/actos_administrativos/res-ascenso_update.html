@@ -1,0 +1,194 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block extra_css %}
+<link href="{% static 'core/vendor/choices/css/choices.min.css' %}" rel="stylesheet">
+<link href="{% static 'core/css/custom-choices.css' %}" rel="stylesheet">
+{% endblock %}
+{% block tittle %}ascenso y nombramiento | Update{% endblock %}
+
+{% block content %}
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Actualizar Resolución de {{ form.tipo_resolucion.value }}</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'ingreso_resolucion' %}?tab=res_ascenso">Actos Administrativos</a></li>
+        <li class="breadcrumb-item active">Actualizar Resolución de {{ form.tipo_resolucion.value }}</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Resolución de {{ form.tipo_resolucion.value }}</h5>
+                        
+                        <div class="card row pt-3 pb-3 m-3">
+
+                        <div class="card-body">
+                            <h5 class="card-title">Actualice la Resolución de {{ form.tipo_resolucion.value }}</h5>
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {% csrf_token %}
+                                {% csrf_token %}
+                                {% if messages %}                                
+                                        {% for message in messages %}
+                                            <p class="alert alert-success text-center ms-3 me-3">{{ message }}</p>
+                                        {% endfor %}                                
+                                {% endif %}   
+                                <div class="row mb-3">
+                                    <label for="{{ form.fecha_resolucion.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Fecha Resolución</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ form.fecha_resolucion.name }}" type="date" class="form-control" 
+                                            id="{{ form.fecha_resolucion.id_for_label }}" 
+                                            value="{{ form.fecha_resolucion.value|date:'Y-m-d' }}" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="{{ form.numero_resolucion.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Número de Resolución</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ form.numero_resolucion.name }}" type="text" class="form-control" id="{{ form.numero_resolucion.id_for_label }}" value="{{ form.numero_resolucion.value }}" required>
+                                        <small class="form-text text-muted">Formato permitido: ingrese solo el número de Decreto o Resolución</small>
+                                    </div>
+                                </div> 
+                                <div class="row mb-3">
+                                    <label for="{{ form.fecha_ascenso.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Fecha Ascenso o Nombramiento</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ form.fecha_ascenso.name }}" type="date" class="form-control" 
+                                            id="{{ form.fecha_ascenso.id_for_label }}" 
+                                            value="{{ form.fecha_ascenso.value|date:'Y-m-d' }}" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="tipo_resolucion" class="col-md-4 col-lg-3 col-form-label">Tipo de Resolución</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select class="form-control" id="tipo_resolucion" name="tipo_resolucion">
+                                            <option value="">Seleccione...</option>
+                                            <option value="Ascenso" {% if form.instance.tipo_resolucion == "Ascenso" %}selected{% endif %}>Ascenso</option>
+                                            <option value="Nombramiento" {% if form.instance.tipo_resolucion == "Nombramiento" %}selected{% endif %}>Nombramiento</option>
+                                        </select>
+                                    </div>
+                                </div> 
+                                <div class="row mb-3">
+                                    <label for="{{ form.resolucion.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Cargar Decreto</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input class="form-control" type="file" id="{{ form.resolucion.id_for_label }}" name="{{ form.resolucion.name }}" accept=".pdf">
+                                        <small class="form-text text-muted">Formato permitido: PDF. Tamaño máximo: 2MB.</small>
+                                        {% if form.resolucion.errors %}
+                                            <div class="text-danger">
+                                                {{ form.resolucion.errors|join:", " }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div> 
+                                
+                                <div class="row mb-3">
+                                    <label for="id_reservista" class="col-md-4 col-lg-3 col-form-label">Reservista</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select id="id_reservista" name="id_reservista" class="form-select">
+                                            <option value="">Seleccione...</option>
+                                            {% for reservista in reservistas %}
+                                                <option value="{{ reservista.id }}" 
+                                                    {% if form.instance.id_reservista and form.instance.id_reservista.id == reservista.id %}selected{% endif %}>
+                                                    {{ reservista.apellido_paterno }} {{ reservista.apellido_materno }}, {{ reservista.nombre }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>  
+                                <div class="row mb-3">
+                                    <label for="id_uac" class="col-md-4 col-lg-3 col-form-label">Grado</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select class="form-control" id="id_grado" name="grado">
+                                            <option value="">Seleccione...</option>
+                                            {% for grado in grados %}
+                                                {% if "rva" in grado.grado_sigla|lower %}
+                                                <option value="{{ grado.id }}"
+                                                    {% if form.instance.grado and form.instance.grado.id == grado.id %} selected {% endif %}>
+                                                    {{ grado.grado_sigla }}
+                                                </option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>       
+                                    </div>
+                                </div>  
+                                  
+                                <button type="submit" class="btn btn-primary">Actualizar</button>
+                                <a href="{% url 'list_res_ascenso' %}" class="btn btn-success ">Ver listado</a>
+                            </form>
+                        </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+ 
+
+</main><!-- End #main -->
+
+{% endblock %}
+
+{% block extra_js %}    
+
+    <script src="{% static 'core/vendor/choices/js/choices.min.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof Choices !== 'undefined') {
+                const selectElement = document.getElementById('id_reservista');
+                if (selectElement) {
+                    const choices = new Choices(selectElement, {
+                        searchEnabled: true,
+                        searchPlaceholderValue: 'Buscar...',
+                        itemSelectText: '',
+                        noResultsText: 'No se encontraron resultados',
+                        placeholder: true,
+                        placeholderValue: 'Seleccione...',
+                        removeItemButton: true,
+                        shouldSort: false,
+                        classNames: {
+                            containerOuter: 'choices',
+                            containerInner: 'choices__inner',
+                            input: 'choices__input',
+                            inputCloned: 'choices__input--cloned',
+                            list: 'choices__list',
+                            listItems: 'choices__list--multiple',
+                            listSingle: 'choices__list--single',
+                            listDropdown: 'choices__list--dropdown',
+                            item: 'choices__item',
+                            itemSelectable: 'choices__item--selectable',
+                            itemDisabled: 'choices__item--disabled',
+                            itemChoice: 'choices__item--choice',
+                            placeholder: 'choices__placeholder',
+                            group: 'choices__group',
+                            groupHeading: 'choices__heading',
+                            button: 'choices__button'
+                        },
+                        callbackOnInit: function() {
+                            // Mantener el valor preseleccionado si existe
+                            const selectedOption = selectElement.querySelector('option[selected]');
+                            if (selectedOption) {
+                                this.setChoiceByValue(selectedOption.value);
+                            }
+                        }
+                    });
+
+                    // Manejar la limpieza del valor
+                    selectElement.addEventListener('change', function(event) {
+                        if (!event.target.value) {
+                            choices.clearStore();
+                            choices.setChoiceByValue('');
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+{% endblock %}

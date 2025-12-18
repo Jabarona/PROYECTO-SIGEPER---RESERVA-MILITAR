@@ -1,0 +1,162 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block tittle %}Actualizar usuario{% endblock %}
+
+{% block content %}
+
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Usuarios</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                <li class="breadcrumb-item">Administración de Usuarios</li>
+                <li class="breadcrumb-item active">Actualizar Usuario</li>
+            </ol>
+        </nav>
+
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Actualizar Usuario</h5>  
+                        <div class="card row pt-3 pb-3 m-3">
+                            <!-- Formulario para actualizar -->
+                            <form method="POST">
+                                {% csrf_token %}
+                                {% if messages %}
+                                <div class="container mt-3">
+                                    {% for message in messages %}
+                                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                        {{ message }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+
+                                
+                                
+                                <div class="row mb-3 me-">
+                                    <label for="{{ form.nombre.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Nombre</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input type="text" name="{{ form.nombre.name }}" id="{{ form.nombre.id_for_label }}" 
+                                        value="{{ form.nombre.value }}" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row mb-3 me-">
+                                    <label for="{{ form.apellido_paterno.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Apellido Paterno</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input type="text" name="{{ form.apellido_paterno.name }}" id="{{ form.apellido_paterno.id_for_label }}" 
+                                        value="{{ form.apellido_paterno.value }}" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row mb-3 me-">
+                                    <label for="{{ form.apellido_materno.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Apellido Materno</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input type="text" name="{{ form.apellido_materno.name }}" id="{{ form.apellido_materno.id_for_label }}" 
+                                        value="{{ form.apellido_materno.value }}" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row mb-3 me-">
+                                    <label for="{{ form.grado.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Grado</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select class="form-select" id="{{ form.grado.id_for_label }}" name="{{ form.grado.name }}">
+                                            <option value="">Seleccione...</option>
+                                            {% for grado in grados %}
+                                            <option value="{{ grado.id }}" {% if form.grado.value == grado.id %}selected{% endif %}>{{ grado.grado }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3 me-">
+                                    <label for="{{ form.unidad.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Unidad</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select class="form-select" id="{{ form.unidad.id_for_label }}" name="{{ form.unidad.name }}">
+                                            <option value="">Seleccione...</option>
+                                            {% for unidad in unidades %}
+                                            <option value="{{ unidad.id }}" {% if form.unidad.value == unidad.id %}selected{% endif %}>{{ unidad.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3 me-">
+                                    <label for="{{ form.citofono.id_for_label }}" class="col-md-4 col-lg-3 col-form-label ">Citofono</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input type="text"
+                                            name="{{ form.citofono.name }}"
+                                            id="{{ form.citofono.id_for_label }}"
+                                            value="{% if form.citofono.value %}{{ form.citofono.value }}{% else %}Sin Opus{% endif %}"
+                                            class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row mb-3 me-">
+                                    <label for="{{ form.correo.id_for_label }}" class="col-md-4 col-lg-3 col-form-label ">Correo Electrónico</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input type="text" name="{{ form.correo.name }}" id="{{ form.correo.id_for_label }}" 
+                                        value="{{ form.correo.value }}" class="form-control">
+                                    </div>
+                                </div>
+    
+                                <div class="row mb-3 me-">
+                                    <label for="{{ form.foto.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Cargar Imagen</label>
+                                    <div class="col-sm-9"> 
+                                        <input class="form-control" type="file" id="{{ form.foto.id_for_label }}" name="{{ form.foto.name }}" accept=".jpg, .jpeg, .png">
+                                        <small class="form-text text-muted">Formato permitido: JPG. Tamaño máximo: 2MB.</small>
+                                        {% if form.imagen.errors %}
+                                            <div class="text-danger">
+                                                {{ form.imagen.errors|join:", " }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3 me- align-items-center">
+                                    <label class="col-md-4 col-lg-3 col-form-label">Perfiles</label>
+                                    <div class="col-sm-9">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="{{ form.is_admin.id_for_label }}"
+                                                name="{{ form.is_admin.name }}" {% if form.is_admin.value %}checked{% endif %}>
+                                            <label class="form-check-label" for="{{ form.is_admin.id_for_label }}">Administrador</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="{{ form.is_divper.id_for_label }}"
+                                                name="{{ form.is_divper.name }}" {% if form.is_divper.value %}checked{% endif %}>
+                                            <label class="form-check-label" for="{{ form.is_divper.id_for_label }}">DIVPER</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="{{ form.is_uac.id_for_label }}"
+                                                name="{{ form.is_uac.name }}" {% if form.is_uac.value %}checked{% endif %}>
+                                            <label class="form-check-label" for="{{ form.is_uac.id_for_label }}">UAC</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="{{ form.is_unidad.id_for_label }}"
+                                                name="{{ form.is_unidad.name }}" {% if form.is_unidad.value %}checked{% endif %}>
+                                            <label class="form-check-label" for="{{ form.is_unidad.id_for_label }}">Unidad</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="{{ form.is_lector.id_for_label }}"
+                                                name="{{ form.is_lector.name }}" {% if form.is_lector.value %}checked{% endif %}>
+                                            <label class="form-check-label" for="{{ form.is_lector.id_for_label }}">Lector</label>
+                                        </div>
+                                </div>
+             
+
+                                <div class=" d-flex justify-content-center ">
+                                    <!-- Botones para enviar o ver listado -->
+                                    <button type="submit" class="btn btn-primary me-3">Actualizar</button>
+                                    <a href="{% url 'user_list' %}" class="btn btn-success">Ver listado</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+{% endblock %}

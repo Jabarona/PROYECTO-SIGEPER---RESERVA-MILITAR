@@ -1,0 +1,561 @@
+{% extends "core/base.html" %} 
+{% load static %}
+{% block extra_css %}
+<link href="{% static 'core/vendor/choices/css/choices.min.css' %}" rel="stylesheet">
+<link href="{% static 'core/css/custom-choices.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block tittle %}Mantenedor{% endblock %}
+
+{% block content %} 
+
+<main id="main" class="main">
+    
+  <div class="pagetitle">
+      <h1>Mantenedor</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+          <li class="breadcrumb-item active">Mantenedor</li>
+        </ol>
+      </nav>
+  </div><!-- End Page Title -->
+    
+  <section class="section profile">
+    <div class="row justify-content-center">
+      <div class="col-xl-10">
+
+        <div class="card">
+          <div class="card-body pt-3">
+            <!-- Bordered Tabs -->
+            <ul class="nav nav-tabs nav-tabs-bordered">
+              <li class="nav-item">
+                  <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#admin-afp">AFP</button>
+              </li>
+              <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#admin-isapre">ISAPRE</button>
+              </li>
+              <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#admin-ciudad">Ciudad</button>
+              </li>
+              <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#admin-arma">Arma y Servicio</button>
+              </li>
+              <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#admin-estado_civil">Estado Civil</button>
+              </li>
+              <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#admin-grado">Grado</button>
+              </li>
+              <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#admin-grupo_sanguineo">Grupo Sanguíneo</button>
+              </li>
+              <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#admin-profesion">Profesión</button>
+              </li>
+              <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#admin-religion">Religión</button>
+              </li>
+              <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#admin-uac">UAC</button>
+              </li>
+              <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#admin-ubm">UBM</button>
+              </li>
+              <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#admin-medalla">Medalla</button>
+              </li>
+              <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#admin-categoria">Categoria</button>
+              </li>
+              <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#admin-unidad">Unidad</button>
+              </li>
+            </ul>
+          
+            <!--Mensaje que la información fue ingresadar correctamente-->
+            <div class="tab-content pt-2">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'warning' %}alert-danger{% elif message.tags == 'error' %}alert-danger{% else %}alert-info{% endif %}">
+                            <p class="text-center">{{ message }}</p>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- AFP -->
+                <div class="tab-pane fade show active" id="admin-afp">                
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ingrese una nueva AFP</h5>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="afp">
+                                <div class="row mb-3">
+                                    <label for="{{ afp_form.nombre.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Nombre</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ afp_form.nombre.name }}" type="text" class="form-control" id="{{ afp_form.nombre.id_for_label }}" value="{{ afp_form.nombre.value|default:'' }}" required>
+                                    </div>
+                                </div> 
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a href="{% url 'list_afp' %}" class="btn btn-success ">Ver listado</a>
+                            </form>
+                        </div>
+                    </div>                    
+                </div><!-- Fin de AFP -->
+
+                <!-- ISAPRE -->
+                <div class="tab-pane fade" id="admin-isapre">                
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ingrese una nueva ISAPRE</h5>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="isapre">
+                                <div class="row mb-3">
+                                    <label for="{{ isapre_form.nombre.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Nombre</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ isapre_form.nombre.name }}" type="text" class="form-control" id="{{ isapre_form.nombre.id_for_label }}" value="{{ isapre_form.nombre.value|default:'' }}" required>
+                                    </div>
+                                </div> 
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a href="{% url 'list_isapre' %}" class="btn btn-success ">Ver listado</a>
+                            </form>
+                        </div>
+                    </div>                    
+                </div><!-- Fin de ISAPRE -->
+
+                <!-- Ciudad -->
+                <div class="tab-pane fade" id="admin-ciudad">                
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ingrese una nueva Ciudad</h5>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="ciudad">
+                                <div class="row mb-3">
+                                    <label for="{{ ciudad_form.nombre.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Nombre</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ ciudad_form.nombre.name }}" type="text" class="form-control" id="{{ ciudad_form.nombre.id_for_label }}" value="{{ ciudad_form.nombre.value|default:'' }}" required>
+                                    </div>
+                                </div> 
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a href="{% url 'list_ciudad' %}" class="btn btn-success ">Ver listado</a>
+                            </form>
+                        </div>
+                    </div>                    
+                </div><!-- Fin de ISAPRE -->
+
+                <!-- Arma y Servicio -->
+                <div class="tab-pane fade" id="admin-arma">                
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ingrese una nueva arma o servicio</h5>
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="arma">
+                                <div class="row mb-3">
+                                    <label for="{{ arma_form.nombre.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Arma</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ arma_form.nombre.name }}" type="text" class="form-control" id="{{ arma_form.nombre.id_for_label }}" value="{{ arma_form.nombre.value|default:'' }}" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="{{ arma_form.sigla_arma.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Abreviación</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ arma_form.sigla_arma.name }}" type="text" class="form-control" id="{{ arma_form.sigla_arma.id_for_label }}" value="{{ arma_form.sigla_arma.value|default:'' }}" required>
+                                    </div>
+                                </div>   
+                                <div class="row mb-3">
+                                    <label for="{{ arma_form.imagen.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Cargar Imagen</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input class="form-control" type="file" id="{{ arma_form.imagen.id_for_label }}" name="{{ arma_form.imagen.name }}" accept=".png">
+                                        <small class="form-text text-muted">Formato permitido: PNG. Tamaño máximo: 2MB.</small>
+                                        {% if arma_form.imagen.errors %}
+                                            <div class="text-danger">
+                                                {{ arma_form.imagen.errors|join:", " }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                  
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a href="{% url 'list_arma' %}" class="btn btn-success ">Ver listado</a>
+                            </form>
+                        </div>
+                    </div>                    
+                </div><!-- Fin de Arma y Servicio -->
+
+                <!-- Estado Civil -->
+                <div class="tab-pane fade" id="admin-estado_civil">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ingrese un nuevo Estado Civil</h5>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="estado_civil">
+                                <div class="row mb-3">
+                                    <label for="{{ estado_civil_form.nombre.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Nombre</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ estado_civil_form.nombre.name }}" type="text" class="form-control" id="{{ estado_civil_form.nombre.id_for_label }}" value="{{ estado_civil_form.nombre.value|default:'' }}" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary ">Guardar</button>
+                                <a href="{% url 'list_estado_civil' %}" class="btn btn-success">Ver listado</a>                                
+                            </form>
+                        </div>
+                    </div>
+                </div><!-- Fin de Estado Civil -->
+
+                <!-- Grado -->
+                <div class="tab-pane fade" id="admin-grado">                
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ingrese un nuevo Grado</h5>
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="grado">
+                                <div class="row mb-3">
+                                    <label for="{{ grado_form.grado.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Nombre</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ grado_form.grado.name }}" type="text" class="form-control" id="{{ grado_form.grado.id_for_label }}" value="{{ grado_form.grado.value|default:'' }}" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="{{ grado_form.grado_sigla.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Abreviación</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ grado_form.grado_sigla.name }}" type="text" class="form-control" id="{{ grado_form.grado_sigla.id_for_label }}" value="{{ grado_form.grado_sigla.value|default:'' }}" required>
+                                    </div>
+                                </div>   
+                                <div class="row mb-3">
+                                    <label for="{{ grado_form.imagen.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Cargar Imagen</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input class="form-control" type="file" id="{{ grado_form.imagen.id_for_label }}" name="{{ grado_form.imagen.name }}" accept=".png, .jpg, .jpeg">
+                                        <small class="form-text text-muted">Formato permitido: PNG. Tamaño máximo: 2MB.</small>
+                                        {% if grado_form.imagen.errors %}
+                                            <div class="text-danger">
+                                                {{ grado_form.imagen.errors|join:", " }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                  
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a href="{% url 'list_grado' %}" class="btn btn-success ">Ver listado</a>
+                            </form>
+                        </div>
+                    </div>                    
+                </div><!-- Fin de Grado -->
+                
+                <!-- Grupo Sanguíneo -->
+                <div class="tab-pane fade" id="admin-grupo_sanguineo">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ingrese un nuevo Grupo Sanguíneo</h5>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="grupo_sanguineo">
+                                <div class="row mb-3">
+                                    <label for="{{ grupo_sanguineo_form.nombre.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Nombre</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ grupo_sanguineo_form.nombre.name }}" type="text" class="form-control" id="{{ grupo_sanguineo_form.nombre.id_for_label }}" value="{{ grupo_sanguineo_form.nombre.value|default:'' }}" required>
+                                        <small class="form-text text-muted">Formato permitido: No puede exceder más de 4 caracteres.</small>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a href="{% url 'list_grupo_sanguineo' %}" class="btn btn-success m-1">Ver listado</a>
+                            </form>
+                        </div>
+                    </div>                    
+                </div><!-- Fin de Grupo Sanguíneo -->
+
+                <!-- profesión -->
+                <div class="tab-pane fade" id="admin-profesion">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ingrese una nueva Profesión</h5>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="profesion">
+                                <div class="row mb-3">
+                                    <label for="{{ profesion_form.nombre.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Nombre</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ profesion_form.nombre.name }}" type="text" class="form-control" id="{{ profesion_form.nombre.id_for_label }}" value="{{ actividad_form.nombre.value|default:'' }}" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a href="{% url 'list_profesion' %}" class="btn btn-success">Ver listado</a>
+                            </form>
+                        </div>
+                    </div>
+                    
+                </div><!-- Fin de profesion -->
+
+                <!-- religion -->
+                <div class="tab-pane fade" id="admin-religion">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ingrese una nueva Religión</h5>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="religion">
+                                <div class="row mb-3">
+                                    <label for="{{ religion_form.nombre.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Nombre</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ religion_form.nombre.name }}" type="text" class="form-control" id="{{ religion_form.nombre.id_for_label }}" value="{{ religion_form.nombre.value|default:'' }}" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a href="{% url 'list_religion' %}" class="btn btn-success">Ver listado</a>
+                            </form>
+                        </div>
+                    </div>
+                </div><!-- Fin de religion -->
+
+                <!-- UAC -->
+                <div class="tab-pane fade" id="admin-uac">                
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ingrese una nueva Unidad de Armas Combinadas</h5>
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="uac">
+                                <div class="row mb-3">
+                                    <label for="{{ uac_form.nombre.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Nombre</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ uac_form.nombre.name }}" type="text" class="form-control" id="{{ uac_form.nombre.id_for_label }}" value="{{ uac_form.nombre.value|default:'' }}" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="{{ uac_form.uac_sigla.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Abreviación</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ uac_form.uac_sigla.name }}" type="text" class="form-control" id="{{ uac_form.uac_sigla.id_for_label }}" value="{{ uac_form.uac_sigla.value|default:'' }}" required>
+                                    </div>
+                                </div>   
+                                <div class="row mb-3">
+                                    <label for="{{ uac_form.imagen.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Cargar Imagen</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input class="form-control" type="file" id="{{ uac_form.imagen.id_for_label }}" name="{{ uac_form.imagen.name }}" accept=".png, .jpg, .jpeg">
+                                        <small class="form-text text-muted">Formato permitido: PNG. Tamaño máximo: 2MB.</small>
+                                        {% if uac_form.imagen.errors %}
+                                            <div class="text-danger">
+                                                {{ uac_form.imagen.errors|join:", " }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                  
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a href="{% url 'list_uac' %}" class="btn btn-success ">Ver listado</a>
+                            </form>
+                        </div>
+                    </div>                    
+                </div><!-- Fin de Arma y Servicio -->
+
+                <!-- UBM -->
+                <div class="tab-pane fade" id="admin-ubm">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ingrese una nueva Unidad Base de Movilización</h5>
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="ubm">
+                                <div class="row mb-3">
+                                    <label for="{{ ubm_form.nombre.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Nombre</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ ubm_form.nombre.name }}" type="text" class="form-control" id="{{ ubm_form.nombre.id_for_label }}" value="{{ ubm_form.nombre.value|default:'' }}" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="{{ ubm_form.ubm_sigla.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Abreviación</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ ubm_form.ubm_sigla.name }}" type="text" class="form-control" id="{{ ubm_form.ubm_sigla.id_for_label }}" value="{{ ubm_form.ubm_sigla.value|default:'' }}" required>
+                                    </div>
+                                </div> 
+
+                                <div class="row mb-3">
+                                    <label for="id_escalon_superior" class="col-md-4 col-lg-3 col-form-label">Escalón Superior</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select id="id_escalon_superior" name="escalon_superior" class="form-select">
+                                            <option value="">Seleccione...</option>
+                                            {% for uac in uacs %}
+                                                <option value="{{ uac.id }}" {% if ubm_form.escalon_superior.value == uac.id %}selected{% endif %}>
+                                                    {{ uac.nombre }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label for="{{ ubm_form.imagen.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Cargar Imagen</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input class="form-control" type="file" id="{{ ubm_form.imagen.id_for_label }}" name="{{ ubm_form.imagen.name }}" accept=".png , .jpg, .jpeg, .webp">
+                                        <small class="form-text text-muted">Formato permitido: PNG. Tamaño máximo: 2MB.</small>
+                                        {% if ubm_form.imagen.errors %}
+                                            <div class="text-danger">
+                                                {{ ubm_form.imagen.errors|join:", " }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a href="{% url 'list_ubm' %}" class="btn btn-success ">Ver listado</a>
+                            </form>
+                        </div>
+                    </div>
+                </div><!-- Fin de UBM -->
+
+                <!-- medalla -->
+                <div class="tab-pane fade" id="admin-medalla">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ingrese una nueva medalla</h5>
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="medalla">
+                                <div class="row mb-3">
+                                    <label for="{{ medalla_form.nombre.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Nombre</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ medalla_form.nombre.name }}" type="text" class="form-control" id="{{ medalla_form.nombre.id_for_label }}" value="{{ medalla_form.nombre.value|default:'' }}" required>
+                                    </div>
+                                </div>                                
+                                <div class="row mb-3">
+                                    <label for="{{ medalla_form.imagen.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Cargar Imagen</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input class="form-control" type="file" id="{{ medalla_form.imagen.id_for_label }}" name="{{ medalla_form.imagen.name }}" accept=".png, .jpg, .jpeg">
+                                        <small class="form-text text-muted">Formato permitido: PNG. Tamaño máximo: 2MB.</small>
+                                        {% if medalla_form.imagen.errors %}
+                                            <div class="text-danger">
+                                                {{ medalla_form.imagen.errors|join:", " }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                  
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a href="{% url 'list_medalla' %}" class="btn btn-success ">Ver listado</a>
+                            </form>
+                        </div>
+                    </div>
+                </div><!-- Fin de medalla -->
+
+                <!-- categoria -->
+                <div class="tab-pane fade" id="admin-categoria">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ingrese una nueva Categoria</h5>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="categoria">
+                                <div class="row mb-3">
+                                    <label for="{{ categoria_form.nombre.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Nombre</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ categoria_form.nombre.name }}" type="text" class="form-control" id="{{ categoria_form.nombre.id_for_label }}" value="{{ categoria_form.nombre.value|default:'' }}" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a href="{% url 'list_categoria' %}" class="btn btn-success">Ver listado</a>
+                            </form>
+                        </div>
+                    </div>
+                </div><!-- Fin de categoria -->
+
+                <!-- Unidad -->
+                <div class="tab-pane fade" id="admin-unidad">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ingrese una nueva Unidad</h5>
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="unidad">
+                                <div class="row mb-3">
+                                    <label for="{{ unidad_form.nombre.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Nombre</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ unidad_form.nombre.name }}" type="text" class="form-control" id="{{ unidad_form.nombre.id_for_label }}" value="{{ unidad_form.nombre.value|default:'' }}" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="{{ unidad_form.unidad_sigla.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Abreviación</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ unidad_form.unidad_sigla.name }}" type="text" class="form-control" id="{{ unidad_form.unidad_sigla.id_for_label }}" value="{{ unidad_form.unidad_sigla.value|default:'' }}" required>
+                                    </div>
+                                </div>                                
+
+                                <div class="row mb-3">
+                                    <label for="{{ unidad_form.imagen.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Cargar Imagen</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input class="form-control" type="file" id="{{ unidad_form.imagen.id_for_label }}" name="{{ unidad_form.imagen.name }}" accept=".jpg, .png, .jpeg">
+                                        <small class="form-text text-muted">Formato permitido: PNG. Tamaño máximo: 2MB.</small>
+                                        {% if unidad_form.imagen.errors %}
+                                            <div class="text-danger">
+                                                {{ unidad_form.imagen.errors|join:", " }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>    
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a href="{% url 'list_unidad' %}" class="btn btn-success ">Ver listado</a>
+                            </form>
+                        </div>
+                    </div>
+                </div><!-- Fin de UBM -->
+        
+            </div>
+          </div><!-- End Bordered Tabs -->
+        </div> <!-- End card -->
+
+      </div>
+    </div>
+  </section> <!-- End Section -->
+
+</main><!-- End #main -->
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static "core/js/tab_mantenedor.js" %}"></script>
+
+    <script src="{% static 'core/vendor/choices/js/choices.min.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof Choices !== 'undefined') {
+                const selectElement = document.getElementById('id_escalon_superior');
+                if (selectElement) {
+                    const choices = new Choices(selectElement, {
+                        searchEnabled: true,
+                        searchPlaceholderValue: 'Buscar...',
+                        itemSelectText: '',
+                        noResultsText: 'No se encontraron resultados',
+                        placeholder: true,
+                        placeholderValue: 'Seleccione...',
+                        shouldSort: false,
+                        removeItemButton: false,
+                        searchResultLimit: 20,
+                        position: 'bottom',
+                        classNames: {
+                            containerOuter: 'choices',
+                            containerInner: 'choices__inner',
+                            input: 'choices__input',
+                            inputCloned: 'choices__input--cloned',
+                            list: 'choices__list',
+                            listItems: 'choices__list--multiple',
+                            listSingle: 'choices__list--single',
+                            listDropdown: 'choices__list--dropdown',
+                            item: 'choices__item',
+                            itemSelectable: 'choices__item--selectable',
+                            itemDisabled: 'choices__item--disabled',
+                            itemChoice: 'choices__item--choice',
+                            placeholder: 'choices__placeholder',
+                            group: 'choices__group',
+                            groupHeading: 'choices__heading',
+                            button: 'choices__button'
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,155 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block tittle %}UBM | Update{% endblock %}
+{% block extra_css %}
+<link href="{% static 'core/vendor/choices/css/choices.min.css' %}" rel="stylesheet">
+<link href="{% static 'core/css/custom-choices.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Actualizar UBM</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+        <li class="breadcrumb-item">Mantenedor</li>
+        <li class="breadcrumb-item active">Actualizar UBM</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">UBM</h5>
+                        
+                        <div class="card row pt-3 pb-3 m-3">
+
+                        <div class="card-body">
+                            <h5 class="card-title">Actualice la información de la UBM</h5>
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {% csrf_token %}
+                                {% if messages %}                                
+                                        {% for message in messages %}
+                                            <p class="alert alert-success text-center ms-3 me-3">{{ message }}</p>
+                                        {% endfor %}                                
+                                {% endif %}                                 
+                                <div class="row mb-3">
+                                    <label for="{{ form.nombre.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Nombre</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ form.nombre.name }}" type="text" class="form-control" id="{{ form.nombre.id_for_label }}" value="{{ form.nombre.value }}" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="{{ form.ubm_sigla.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Abreviación</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ form.ubm_sigla.name }}" type="text" class="form-control" id="{{ form.ubm_sigla.id_for_label }}" value="{{ form.ubm_sigla.value }}" required>
+                                    </div>
+                                </div> 
+                                <div class="row mb-3">
+                                    <label for="id_escalon_superior" class="col-md-4 col-lg-3 col-form-label">Escalón Superior</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select id="id_escalon_superior" name="escalon_superior" class="form-select">
+                                            <option value="">Seleccione...</option>
+                                            {% for uac in uacs %}
+                                                <option value="{{ uac.id }}" 
+                                                    {% if form.instance.escalon_superior and form.instance.escalon_superior.id == uac.id %}selected{% endif %}>
+                                                    {{ uac.nombre }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+   
+                                <div class="row mb-3">
+                                    <label for="{{ form.imagen.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Cargar Imagen</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input class="form-control" type="file" id="{{ form.imagen.id_for_label }}" name="{{ form.imagen.name }}" accept=".png">
+                                        <small class="form-text text-muted">Formato permitido: PNG. Tamaño máximo: 2MB.</small>
+                                        {% if form.imagen.errors %}
+                                            <div class="text-danger">
+                                                {{ form.imagen.errors|join:", " }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                  
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a href="{% url 'list_ubm' %}" class="btn btn-success ">Ver listado</a>
+                            </form>
+                        </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+ 
+
+</main><!-- End #main -->
+
+{% endblock %}
+
+{% block extra_js %}
+
+    <script src="{% static 'core/vendor/choices/js/choices.min.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof Choices !== 'undefined') {
+                const selectElement = document.getElementById('id_escalon_superior');
+                if (selectElement) {
+                    const choices = new Choices(selectElement, {
+                        searchEnabled: true,
+                        searchPlaceholderValue: 'Buscar...',
+                        itemSelectText: '',
+                        noResultsText: 'No se encontraron resultados',
+                        placeholder: true,
+                        placeholderValue: 'Seleccione...',
+                        removeItemButton: true,
+                        shouldSort: false,
+                        classNames: {
+                            containerOuter: 'choices',
+                            containerInner: 'choices__inner',
+                            input: 'choices__input',
+                            inputCloned: 'choices__input--cloned',
+                            list: 'choices__list',
+                            listItems: 'choices__list--multiple',
+                            listSingle: 'choices__list--single',
+                            listDropdown: 'choices__list--dropdown',
+                            item: 'choices__item',
+                            itemSelectable: 'choices__item--selectable',
+                            itemDisabled: 'choices__item--disabled',
+                            itemChoice: 'choices__item--choice',
+                            placeholder: 'choices__placeholder',
+                            group: 'choices__group',
+                            groupHeading: 'choices__heading',
+                            button: 'choices__button'
+                        },
+                        callbackOnInit: function() {
+                            // Mantener el valor preseleccionado si existe
+                            const selectedOption = selectElement.querySelector('option[selected]');
+                            if (selectedOption) {
+                                this.setChoiceByValue(selectedOption.value);
+                            }
+                        }
+                    });
+
+                    // Manejar la limpieza del valor
+                    selectElement.addEventListener('change', function(event) {
+                        if (!event.target.value) {
+                            choices.clearStore();
+                            choices.setChoiceByValue('');
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+{% endblock %}

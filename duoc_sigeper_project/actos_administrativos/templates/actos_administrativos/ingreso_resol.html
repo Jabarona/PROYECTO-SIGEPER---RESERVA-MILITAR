@@ -1,0 +1,478 @@
+{% extends "core/base.html" %} 
+{% load static %}
+{% block tittle %}Ingreso de Resoluciones{% endblock %}
+{% block extra_css %}
+<link href="{% static 'core/vendor/choices/css/choices.min.css' %}" rel="stylesheet">
+<link href="{% static 'core/css/custom-choices.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %} 
+
+<main id="main" class="main">
+    
+  <div class="pagetitle">
+      <h1>Ingreso de Actos Administrativos</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+          <li class="breadcrumb-item active">Actos Administrativos</li>
+        </ol>
+      </nav>
+  </div><!-- End Page Title -->
+    
+  <section class="section profile">
+    <div class="row justify-content-center">
+      <div class="col-xl-10">
+
+        <div class="card">
+          <div class="card-body pt-3">
+            <!-- Bordered Tabs -->
+            <ul class="nav nav-tabs nav-tabs-bordered">
+              <li class="nav-item">
+                  <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#admin-res_condecoracion">Medallas</button>
+              </li>
+              <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#admin-res_ascenso">Nombramiento y Ascenso</button>
+              </li>
+              <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#admin-res_escalafon">Cambio de Escalafón</button>
+              </li>
+              <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#admin-res_institucion">Cambio de Institución</button>
+              </li>
+              <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#admin-res_alta">Altas y Bajas</button>
+              </li>
+              <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#admin-res_cambio_ubm">Cambio de UBM</button>
+              </li>
+            </ul>
+          
+            <!--Mensaje que la información fue ingresadar correctamente-->
+            <div class="tab-content pt-2">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'warning' %}alert-danger{% elif message.tags == 'error' %}alert-danger{% else %}alert-info{% endif %}">
+                            <p class="text-center">{{ message }}</p>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Medallas -->
+                <div class="tab-pane fade show active" id="admin-res_condecoracion">                
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ingrese una nueva resolución de Condecoraciones</h5>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="res_condecoracion">
+                                <div class="row mb-3">
+                                    <label for="{{ condecoracion_form.fecha_resolucion.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Fecha Resolución</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ condecoracion_form.fecha_resolucion.name }}" type="date" class="form-control" id="{{ condecoracion_form.fecha_resolucion.id_for_label }}" value="{{ condecoracion_form.fecha_resolucion.value|default:'' }}" required>
+                                    </div>
+                                </div> 
+                                <div class="row mb-3">
+                                    <label for="{{ condecoracion_form.numero_resolucion.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Número de Resolución</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ condecoracion_form.numero_resolucion.name }}" type="text" class="form-control" id="{{ condecoracion_form.numero_resolucion.id_for_label }}" value="{{ condecoracion_form.numero_resolucion.value|default:'' }}" required>
+                                        <small class="form-text text-muted">Formato permitido: ingrese solo el número de Decreto o Resolución</small>
+                                    </div>
+                                </div> 
+                                <div class="row mb-3">
+                                    <label for="{{ condecoracion_form.fecha_otorgamiento.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Fecha Otorgamiento</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ condecoracion_form.fecha_otorgamiento.name }}" type="date" class="form-control" id="{{ condecoracion_form.fecha_otorgamiento.id_for_label }}" value="{{ condecoracion_form.fecha_otorgamiento.value|default:'' }}" required>
+                                    </div>
+                                </div> 
+                                <div class="row mb-3">
+                                    <label for="id_uac" class="col-md-4 col-lg-3 col-form-label">Tipo de Condecoración</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select class="form-control" id="id_condecoracion" name="tipo_medalla">
+                                            <option value="">Seleccione...</option>
+                                            {% for medalla in medallas %}
+                                                <option value="{{ medalla.id }}" {% if condecoracion_form.tipo_medalla.value == medalla.id %}selected{% endif %}>
+                                                    {{ medalla.nombre }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>                                 
+                                <div class="row mb-3">
+                                    <label for="id_reservista" class="col-md-4 col-lg-3 col-form-label">Reservista</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select id="id_reservista" name="id_reservista" class="form-select reservista-select">
+                                            <option value="">Seleccione...</option>
+                                            {% for reservista in reservistas %}
+                                                <option value="{{ reservista.id }}" {% if ubm_form.id_reservista.value == reservista.id %}selected{% endif %}>
+                                                    {{ reservista.apellido_paterno }} {{ reservista.apellido_materno }}, {{ reservista.nombre }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>                                                            
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a href="{% url 'list_res_condecoracion' %}" class="btn btn-success ">Ver listado</a>
+                            </form>
+                        </div>
+                    </div>                    
+                </div><!-- Fin de medallas -->
+
+                <!-- Nombramiento y ascenso -->
+                <div class="tab-pane fade" id="admin-res_ascenso">                
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ingrese Decreto o Resolución de Nombramiento o Ascenso</h5>
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="res_ascenso">
+                                <div class="row mb-3">
+                                    <label for="{{ ascenso_form.fecha_resolucion.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Fecha Resolución</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ ascenso_form.fecha_resolucion.name }}" type="date" class="form-control" id="{{ ascenso_form.fecha_resolucion.id_for_label }}" value="{{ ascenso_form.fecha_resolucion.value|default:'' }}" required>
+                                    </div>
+                                </div> 
+                                <div class="row mb-3">
+                                    <label for="{{ ascenso_form.numero_resolucion.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Número de Resolución</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ ascenso_form.numero_resolucion.name }}" type="text" class="form-control" id="{{ ascenso_form.numero_resolucion.id_for_label }}" value="{{ ascenso_form.numero_resolucion.value|default:'' }}" required>
+                                        <small class="form-text text-muted">Formato permitido: ingrese solo el número de Decreto o Resolución</small>
+                                    </div>
+                                </div> 
+                                <div class="row mb-3">
+                                    <label for="{{ ascenso_form.fecha_ascenso.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Fecha Ascenso o Nombramiento</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ ascenso_form.fecha_ascenso.name }}" type="date" class="form-control" id="{{ ascenso_form.fecha_ascenso.id_for_label }}" value="{{ ascenso_form.fecha_ascenso.value|default:'' }}" required>
+                                    </div>
+                                </div> 
+                                <div class="row mb-3">
+                                    <label for="tipo_resolucion" class="col-md-4 col-lg-3 col-form-label">Tipo de Resolución</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select class="form-control" id="tipo_resolucion" name="tipo_resolucion">
+                                            <option value="">Seleccione...</option>
+                                            <option value="Ascenso">Ascenso</option>
+                                            <option value="Nombramiento">Nombramiento</option>                                            
+                                        </select>
+                                    </div>
+                                </div> 
+                                <div class="row mb-3">
+                                    <label for="{{ ascenso_form.resolucion.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Cargar Decreto</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input class="form-control" type="file" id="{{ ascenso_form.resolucion.id_for_label }}" name="{{ ascenso_form.resolucion.name }}" accept=".pdf">
+                                        <small class="form-text text-muted">Formato permitido: PDF. Tamaño máximo: 2MB.</small>
+                                        {% if ascenso_form.resolucion.errors %}
+                                            <div class="text-danger">
+                                                {{ ascenso_form.resolucion.errors|join:", " }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div> 
+                                
+                                <div class="row mb-3">
+                                    <label for="id_reservista" class="col-md-4 col-lg-3 col-form-label">Reservista</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select id="id_reservista" name="id_reservista" class="form-select reservista-select">
+                                            <option value="">Seleccione...</option>
+                                            {% for reservista in reservistas %}
+                                                <option value="{{ reservista.id }}" {% if ascenso_form.id_reservista.value == reservista.id %}selected{% endif %}>
+                                                    {{ reservista.apellido_paterno }} {{ reservista.apellido_materno }}, {{ reservista.nombre }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>     
+                                <div class="row mb-3">
+                                    <label for="id_uac" class="col-md-4 col-lg-3 col-form-label">Grado</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select class="form-control" id="id_grado" name="grado">
+                                            <option value="">Seleccione...</option>
+                                            {% for grado in grados %}
+                                                <option value="{{ grado.id }}" {% if ascenso_form.grado.value == grado.id %}selected{% endif %}>
+                                                    {{ grado.grado_sigla }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>  
+                                  
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a href="{% url 'list_res_ascenso' %}" class="btn btn-success ">Ver listado</a>
+                            </form>
+                        </div>
+                    </div>                    
+                </div><!-- Fin de Nombramiento y ascenso -->
+
+                <!-- cambio de escalafón -->
+                <div class="tab-pane fade" id="admin-res_escalafon">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ingrese Resolución de Cambio de Escalafón</h5>
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="res_escalafon">
+                                <div class="row mb-3">
+                                    <label for="{{ cambio_escalafon_form.fecha_resolucion.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Fecha Resolución</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ cambio_escalafon_form.fecha_resolucion.name }}" type="date" class="form-control" id="{{ cambio_escalafon_form.fecha_resolucion.id_for_label }}" value="{{ cambio_escalafon_form.fecha_resolucion.value|default:'' }}" required>
+                                    </div>
+                                </div> 
+
+                                <div class="row mb-3">
+                                    <label for="{{ cambio_escalafon_form.numero_resolucion.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Número de Resolución</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ cambio_escalafon_form.numero_resolucion.name }}" type="text" class="form-control" id="{{ cambio_escalafon_form.numero_resolucion.id_for_label }}" value="{{ cambio_escalafon_form.numero_resolucion.value|default:'' }}" required>
+                                        <small class="form-text text-muted">Formato permitido: ingrese solo el número de Decreto o Resolución</small>
+                                    </div>
+                                </div>    
+
+                                <div class="row mb-3">
+                                    <label for="id_reservista" class="col-md-4 col-lg-3 col-form-label">Reservista</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select id="id_reservista" name="id_reservista" class="form-select reservista-select">
+                                            <option value="">Seleccione...</option>
+                                            {% for reservista in reservistas %}
+                                                <option value="{{ reservista.id }}" {% if cambio_escalafon_form.id_reservista.value == reservista.id %}selected{% endif %}>
+                                                    {{ reservista.apellido_paterno }} {{ reservista.apellido_materno }}, {{ reservista.nombre }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>  
+
+                                <div class="row mb-3">
+                                    <label for="id_grado" class="col-md-4 col-lg-3 col-form-label">Grado</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select class="form-control" id="id_grado" name="grado">
+                                            <option value="">Seleccione...</option>
+                                            {% for grado in grados %}
+                                                <option value="{{ grado.id }}" {% if cambio_escalafon_form.grado.value == grado.id %}selected{% endif %}>
+                                                    {{ grado.grado_sigla }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>    
+
+                                <div class="row mb-3">
+                                    <label for="Escalafon_proveniente" class="col-md-4 col-lg-3 col-form-label">Escalafón Proveniente</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select class="form-control" id="Escalafon_proveniente" name="Escalafon_proveniente">
+                                            <option value="">Seleccione...</option>
+                                            {% for arma in armas %}
+                                                <option value="{{ arma.id }}" {% if cambio_escalafon_form.Escalafon_proveniente.value == arma.id %}selected{% endif %}>
+                                                    {{ arma.nombre }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div> 
+
+                                <div class="row mb-3">
+                                    <label for="Escalafon_destino" class="col-md-4 col-lg-3 col-form-label">Escalafón Destino</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select class="form-control" id="Escalafon_destino" name="Escalafon_destino">
+                                            <option value="">Seleccione...</option>
+                                            {% for arma in armas %}
+                                                <option value="{{ arma.id }}" {% if cambio_escalafon_form.Escalafon_destino.value == arma.id %}selected{% endif %}>
+                                                    {{ arma.nombre }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <label for="{{ cambio_escalafon_form.resolucion.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Cargar Decreto</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input class="form-control" type="file" id="{{ cambio_escalafon_form.resolucion.id_for_label }}" name="{{ cambio_escalafon_form.resolucion.name }}" accept=".pdf">
+                                        <small class="form-text text-muted">Formato permitido: PDF. Tamaño máximo: 2MB.</small>
+                                        {% if cambio_escalafon_form.resolucion.errors %}
+                                            <div class="text-danger">
+                                                {{ cambio_escalafon_form.resolucion.errors|join:", " }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>  
+
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a href="{% url 'list_res_escalafon' %}" class="btn btn-success ">Ver listado</a>                            
+                            </form>
+                        </div>
+                    </div>
+                </div><!-- Fin de cambio de escalafón -->
+
+                <!-- Cambio de Institución -->
+                <div class="tab-pane fade" id="admin-res_institucion">                
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ingrese un nuevo Grado</h5>
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="res_institucion">
+                                <div class="row mb-3">
+                                    <label for="{{ cambio_institucion_form.fecha_resolucion.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Fecha Resolución</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ cambio_institucion_form.fecha_resolucion.name }}" type="date" class="form-control" id="{{ cambio_institucion_form.fecha_resolucion.id_for_label }}" value="{{ cambio_institucion_form.fecha_resolucion.value|default:'' }}" required>
+                                    </div>
+                                </div> 
+                                <div class="row mb-3">
+                                    <label for="{{ cambio_institucion_form.numero_resolucion.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Número de Resolución</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ cambio_institucion_form.numero_resolucion.name }}" type="text" class="form-control" id="{{ cambio_institucion_form.numero_resolucion.id_for_label }}" value="{{ cambio_institucion_form.numero_resolucion.value|default:'' }}" required>
+                                        <small class="form-text text-muted">Formato permitido: ingrese solo el número de Decreto o Resolución</small>
+                                    </div>
+                                </div>                                                                 
+                                
+                                <div class="row mb-3">
+                                    <label for="id_reservista" class="col-md-4 col-lg-3 col-form-label">Reservista</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select id="id_reservista" name="id_reservista" class="form-select reservista-select">
+                                            <option value="">Seleccione...</option>
+                                            {% for reservista in reservistas %}
+                                                <option value="{{ reservista.id }}" {% if cambio_institucion_form.id_reservista.value == reservista.id %}selected{% endif %}>
+                                                    {{ reservista.apellido_paterno }} {{ reservista.apellido_materno }}, {{ reservista.nombre }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>  
+                                <div class="row mb-3">
+                                    <label for="{{ cambio_institucion_form.grado.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Grado</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="{{ cambio_institucion_form.grado.name }}" type="text" class="form-control" id="{{ cambio_institucion_form.grado.id_for_label }}" value="{{ cambio_institucion_form.grado.value|default:'' }}" required>
+                                        <small class="form-text text-muted">Formato permitido: ingresar solo la sigla del grado EJ: CB1</small>
+                                    </div>
+                                </div>                                  
+                                <div class="row mb-3">
+                                    <label for="procedencia" class="col-md-4 col-lg-3 col-form-label">Institución de Procedencia</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select class="form-control" id="procedencia" name="procedencia">
+                                            <option value="">Seleccione...</option>
+                                            <option value="Ejercito">Ejercito</option>
+                                            <option value="Armada">Armada</option>
+                                            <option value="Fuerza Aerea">Fuerza Aerea</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="destino" class="col-md-4 col-lg-3 col-form-label">Institución de Destino</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select class="form-control" id="destino" name="destino">
+                                            <option value="">Seleccione...</option>
+                                            <option value="Ejercito">Ejercito</option>
+                                            <option value="Armada">Armada</option>
+                                            <option value="Fuerza Aerea">Fuerza Aerea</option>
+                                        </select>
+                                    </div>
+                                </div>                         
+                               
+                                <div class="row mb-3">
+                                    <label for="{{ cambio_institucion_form.resolucion.id_for_label }}" class="col-md-4 col-lg-3 col-form-label">Cargar Decreto</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input class="form-control" type="file" id="{{ cambio_institucion_form.resolucion.id_for_label }}" name="{{ cambio_institucion_form.resolucion.name }}" accept=".pdf">
+                                        <small class="form-text text-muted">Formato permitido: PDF. Tamaño máximo: 2MB.</small>
+                                        {% if cambio_institucion_form.resolucion.errors %}
+                                            <div class="text-danger">
+                                                {{ cambio_institucion_form.resolucion.errors|join:", " }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                  
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a href="{% url 'list_res_institucion' %}" class="btn btn-success ">Ver listado</a>
+                            </form>
+                        </div>
+                    </div>                    
+                </div><!-- Cambio de Institución -->
+                
+                <!-- Altas y Bajas -->
+                <div class="tab-pane fade" id="admin-res_alta">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ingrese resolución de Alta o Baja</h5>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="res_alta">
+                                <div class="row mb-3">
+                                    <label for="" class="col-md-4 col-lg-3 col-form-label">En construcción</label>
+                                </div>
+                            </form>
+                        </div>
+                    </div>                    
+                </div><!-- Fin de Altas y Bajas -->
+                
+                <!-- Cambio de UBM -->
+                <div class="tab-pane fade" id="admin-res_cambio_ubm">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ingrese resolución de cambio de UBM</h5>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="res_cambio_ubm">
+                                <div class="row mb-3">
+                                    <label for="" class="col-md-4 col-lg-3 col-form-label">En construcción</label>
+                                </div>
+                            </form>
+                        </div>
+                    </div>                    
+                </div><!-- Fin de cambio de UBM -->
+
+                
+
+            </div>
+          </div><!-- End Bordered Tabs -->
+        </div> <!-- End card -->
+
+      </div>
+    </div>
+  </section> <!-- End Section -->
+
+</main><!-- End #main -->
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static "core/js/tab_mantenedor.js" %}"></script>
+
+    <script src="{% static 'core/vendor/choices/js/choices.min.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof Choices !== 'undefined') {
+                document.querySelectorAll('#id_reservista').forEach(function(selectElement) {
+                    new Choices(selectElement, {
+                        searchEnabled: true,
+                        searchPlaceholderValue: 'Buscar...',
+                        itemSelectText: '',
+                        noResultsText: 'No se encontraron resultados',
+                        placeholder: true,
+                        placeholderValue: 'Seleccione...',
+                        shouldSort: false,
+                        removeItemButton: false,
+                        searchResultLimit: 20,
+                        position: 'bottom',
+                        classNames: {
+                            containerOuter: 'choices',
+                            containerInner: 'choices__inner',
+                            input: 'choices__input',
+                            inputCloned: 'choices__input--cloned',
+                            list: 'choices__list',
+                            listItems: 'choices__list--multiple',
+                            listSingle: 'choices__list--single',
+                            listDropdown: 'choices__list--dropdown',
+                            item: 'choices__item',
+                            itemSelectable: 'choices__item--selectable',
+                            itemDisabled: 'choices__item--disabled',
+                            itemChoice: 'choices__item--choice',
+                            placeholder: 'choices__placeholder',
+                            group: 'choices__group',
+                            groupHeading: 'choices__heading',
+                            button: 'choices__button'
+                        }
+                    });
+                });
+            }
+        });
+
+    </script>
+
+{% endblock %}

@@ -1,0 +1,428 @@
+{% extends "core/base.html" %} {% load static %}
+{% block tittle %}Perfil Reservista{% endblock %}
+
+{% block content %} 
+
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Perfil Reservista</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+        <li class="breadcrumb-item">Gestión de la Reserva</li>
+        <li class="breadcrumb-item active">Reservista</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section profile">
+    <div class="row">
+      <div class="col-xl-4 ">
+        <div class="card">
+          <!-- Bloque para mostrar los mensajes -->
+          {% if messages %}
+          <div class="alert">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} text-center">
+              {{ message }}
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+          <!-- Fin bloque mensajes -->
+          <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+
+            {% if reservista.foto %}
+            <img src="{{ reservista.foto.url }}" alt="{{ reservista.nombre }}" class="rounded-circle border wm-50 hm-50" >
+            {% else %}
+            <img src="{% static 'core/img/soldier-(1).png' %}" alt="Default Profile" class="rounded-circle border wm-50 hm-50">
+            {% endif %}
+
+            <h2 class="text-center text-capitalize">{{ reservista.nombre }} {{ reservista.apellido_paterno }} {{ reservista.apellido_materno }}</h2>
+            
+            <!-- GRADO ARMA Y ESTADO-->
+            <div class="d-flex align-items-center mt-2">
+              {% if reservista.grado.imagen %}                      
+              <img src="{{ reservista.grado.imagen.url }}" alt="{{ reservista.arma }}" class="me-2" height="50px">
+              {% else %}
+              <span class="me-2">{{ reservista.grado }}</span>
+              {% endif %}
+
+              {% if reservista.arma.imagen %}                      
+              <img src="{{ reservista.arma.imagen.url }}" alt="{{ reservista.arma }}" class="me-2" height="50px">
+              {% else %}
+              <!-- COLOCAR ALGUNA FUNCIONALIDAD AQUI SI ES NECESARIO-->
+              {% endif %}
+
+              <h3 class="alert {% if reservista.estado == 'Activo' %}alert-success{% elif reservista.estado == 'Retiro Temporal' %}alert-danger{% endif %} m-0 text-capitalize" role="alert">
+                {{ reservista.estado }}
+              </h3>
+            </div>
+
+            <!-- MEDALLAS-->
+            <div class="d-flex align-items-center mt-2">
+                {% for medalla in medallas %}
+                    <div class="me-2">
+                        {% if medalla.tipo_medalla.imagen %}
+                            <img src="{{ medalla.tipo_medalla.imagen.url }}" alt="{{ medalla.tipo_medalla.nombre }}" height="30px">
+                        {% else %}
+                            <span>{{ medalla.tipo_medalla.nombre }}</span>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>           
+            
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-xl-8">        
+        <div class="card">
+          <div class="card-body pt-3">
+            <!-- Bordered Tabs -->
+            <ul class="nav nav-tabs nav-tabs-bordered">
+
+              <li class="nav-item">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#antecedentes">Antecedentes Generales</button>
+              </li>
+              <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#nombramientos">Nombramiento y ascensos</button>
+              </li>
+              <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#condecoraciones">Condecoraciones</button>
+              </li>
+              <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#escalafon">Cambio de Escalafón</button>
+              </li>
+              <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#ubm">Cambio de UBM</button>
+              </li>
+              <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#altas">Altas y Bajas</button>
+              </li>
+              <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#institucion">Cambio de Institución</button>
+              </li>
+              
+            </ul>
+            <div class="tab-content pt-2">
+
+              <div class="tab-pane fade show active profile-overview pt-3" id="antecedentes">
+                
+                <h5 class="card-title">Antecedentes Personales</h5>
+
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label ">Nombre</div>
+                  <div class="col-lg-9 col-md-8 text-capitalize">{{reservista.nombre}}</div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label ">Apellidos</div>
+                  <div class="col-lg-9 col-md-8 text-capitalize">{{reservista.apellido_paterno}}  {{reservista.apellido_materno}} </div>
+                </div>               
+
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label">RUN</div>
+                  <div class="col-lg-9 col-md-8 ">{{reservista.run}}-{{reservista.dv}}</div>
+                </div>
+                   
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label">Fecha de Nacimiento</div>
+                  <div class="col-lg-9 col-md-8 text-capitalize">
+                    {% if reservista.fecha_nacimiento %}
+                        {{ reservista.fecha_nacimiento }}
+                    {% else %}
+                        Sin información
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label">Edad</div>
+                  <div class="col-lg-9 col-md-8 text-capitalize">
+                    {% if reservista.fecha_nacimiento != null %}
+                        {{ reservista.edad }}
+                    {% else %}
+                        Sin información
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label">Genero</div>
+                  <div class="col-lg-9 col-md-8 text-capitalize">{{reservista.genero}}</div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label">Ciudad</div>
+                  <div class="col-lg-9 col-md-8 text-capitalize">
+                    {% if reservista.ciudad %}
+                        {{ reservista.ciudad }}
+                    {% else %}
+                        Sin información
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label">ISAPRE</div>
+                  <div class="col-lg-9 col-md-8 text-capitalize">
+                    {% if reservista.isapre %}
+                        {{ reservista.isapre }}
+                    {% else %}
+                        Sin información
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label">AFP</div>
+                  <div class="col-lg-9 col-md-8 text-capitalize">
+                    {% if reservista.afp %}
+                        {{ reservista.afp }}
+                    {% else %}
+                        Sin información
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label">Estado Civil</div>
+                  <div class="col-lg-9 col-md-8 text-capitalize">
+                    {% if reservista.estado_civil %}
+                        {{ reservista.estado_civil }}
+                    {% else %}
+                        Sin información
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label">Grupo Sanguineo</div>
+                  <div class="col-lg-9 col-md-8 text-capitalize">
+                    {% if reservista.grupo_sanguineo %}
+                        {{ reservista.grupo_sanguineo }}
+                    {% else %}
+                        Sin información
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label">Religión</div>
+                  <div class="col-lg-9 col-md-8 text-capitalize">
+                    {% if reservista.religion %}
+                        {{ reservista.religion }}
+                    {% else %}
+                        Sin información
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label">Profesión</div>
+                  <div class="col-lg-9 col-md-8 text-capitalize">
+                    {% if reservista.profesion %}
+                        {{ reservista.profesion }}
+                    {% else %}
+                        Sin información
+                    {% endif %}
+                  </div>
+                </div>
+
+                <hr class="dropdown-divider">
+
+                <h5 class="card-title">Antecedentes Militares</h5>
+
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label">Grado</div>
+                  <div class="col-lg-9 col-md-8 text-capitalize">{{reservista.grado.grado}}</div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label">Arma</div>
+                  <div class="col-lg-9 col-md-8 text-capitalize">
+                    {% if reservista.arma %}
+                        {{ reservista.arma }}
+                    {% else %}
+                        Sin información
+                    {% endif %}
+                  </div>
+                </div>     
+
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label">UBM</div>
+                  <div class="col-lg-9 col-md-8 text-capitalize">{{reservista.ubm}}</div>
+                </div>             
+
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 label">UAC</div>
+                  <div class="col-lg-9 col-md-8 text-capitalize">{{reservista.uac}}</div>
+                </div> 
+
+              </div>              
+
+              <div class="tab-pane fade profile-edit pt-3" id="nombramientos">
+                <!-- Tabla de nombramiento o ascenso -->                
+                <h5 class="card-title">Nombramientos y ascensos</h5>
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                        <th>Fecha de Resolución</th>
+                        <th>Número de Resolución</th>
+                        <th>Fecha de ascenso</th>
+                        <th>Resolución</th>
+                        <th>Grado ascendido</th>
+                        <th>Descargar</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for ascenso in ascensos %}
+                      <tr>
+                        <td>{{ ascenso.fecha_resolucion }}</td>
+                        <td>{{ ascenso.numero_resolucion }}</td>
+                        <td>{{ ascenso.fecha_ascenso }}</td>
+                        <td>{{ ascenso.tipo_resolucion }}</td>
+                        <td>{{ ascenso.grado }}</td>
+                        <td>
+                          {% if ascenso.resolucion %}
+                            <a href="{% url 'descargar_documento' 'ResolucionAscenso' ascenso.pk %}" class="btn btn-success btn-sm" title="descargar">
+                                <i class="bi bi-cloud-download"></i>
+                            </a>
+                            {% else %}
+                            <button class="btn btn-secondary btn-sm" disabled title="No hay documento disponible">
+                                <i class="bi bi-cloud-download"></i>
+                            </button>
+                          {% endif %}
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table> 
+              </div>
+
+              <div class="tab-pane fade pt-3" id="condecoraciones">
+                <!-- Tabla de condecoraciones -->                
+                <h5 class="card-title">Condecoraciones</h5>
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                        <th>Fecha de Resolución</th>
+                        <th>Número de Resolución</th>
+                        <th>Fecha de Otorgamiento</th>
+                        <th>Tipo de Medalla</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for medalla in medallas %}
+                      <tr>
+                        <td>{{ medalla.fecha_resolucion }}</td>
+                        <td>{{ medalla.numero_resolucion }}</td>
+                        <td>{{ medalla.fecha_otorgamiento }}</td>
+                        <td>{{ medalla.tipo_medalla.nombre }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>   
+              </div>
+
+              <div class="tab-pane fade pt-3" id="escalafon">
+                <!-- Tabla de cambio de escalafon -->                
+                <h5 class="card-title">Cambio de Escalafón</h5>
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                        <th>Fecha de Resolución</th>
+                        <th>Número de Resolución</th>
+                        <th>Esfon Proveniente</th>
+                        <th>Esfón Destino</th>
+                        <th>Descargar</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for escalafon in escalafones %}
+                      <tr>
+                        <td>{{ escalafon.fecha_resolucion }}</td>
+                        <td>{{ escalafon.numero_resolucion }}</td>
+                        <td>{{ escalafon.Escalafon_proveniente }}</td>
+                        <td>{{ escalafon.Escalafon_destino }}</td>
+                        <td>
+                          {% if escalafon.resolucion %}
+                            <a href="{% url 'descargar_documento' 'ResolucionCambioEscalafon' escalafon.pk %}" class="btn btn-success btn-sm" title="descargar">
+                                <i class="bi bi-cloud-download"></i>
+                            </a>
+                            {% else %}
+                            <button class="btn btn-secondary btn-sm" disabled title="No hay documento disponible">
+                                <i class="bi bi-cloud-download"></i>
+                            </button>
+                          {% endif %}
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table> 
+              </div>              
+
+              <div class="tab-pane fade pt-3" id="ubm">
+                <p class="text-center">En construcción</p>
+              </div>
+
+              <div class="tab-pane fade pt-3" id="altas">
+                <p class="text-center">En construcción</p>
+              </div>
+
+              <div class="tab-pane fade pt-3" id="institucion">
+                <!-- Tabla de cambio de institución -->                
+                <h5 class="card-title">Cambio de Institución</h5>
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                        <th>Fecha de Resolución</th>
+                        <th>Número de Resolución</th>
+                        <th>Intitución Proveniente</th>
+                        <th>Institución Destino</th>
+                        <th>Descargar</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for institucion in instituciones %}
+                      <tr>
+                        <td>{{ institucion.fecha_resolucion }}</td>
+                        <td>{{ institucion.numero_resolucion }}</td>
+                        <td>{{ institucion.procedencia }}</td>
+                        <td>{{ institucion.destino }}</td>
+                        <td>
+                          {% if institucion.resolucion %}
+                            <a href="{% url 'descargar_documento' 'ResolucionCambioInstitucion' institucion.pk %}" class="btn btn-success btn-sm" title="descargar">
+                                <i class="bi bi-cloud-download"></i>
+                            </a>
+                            {% else %}
+                            <button class="btn btn-secondary btn-sm" disabled title="No hay documento disponible">
+                                <i class="bi bi-cloud-download"></i>
+                            </button>
+                          {% endif %}
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table> 
+              </div>
+
+            </div><!-- End Bordered Tabs -->
+
+          </div>
+        </div>
+          <div class="mt-4 d-flex justify-content-end">
+            <a href="{% url 'profile_reservista-update' reservista.id %}" class="btn btn-primary  m-1">Editar reservista</a>
+            <a href="{% url 'profile_reservista-create'%}" class="btn btn-success m-1">Ingresar Reservista</a>
+            <a href="{% url 'profile_reservista-delete' reservista.id %}" class="btn btn-danger m-1">Eliminar reservista</a>
+          </div>
+          
+      </div>
+    </div>
+  </section>
+
+</main><!-- End #main -->
+
+{% endblock %} 
