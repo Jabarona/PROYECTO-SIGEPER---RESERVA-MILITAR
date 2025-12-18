@@ -69,8 +69,9 @@ Sigue estos pasos para levantar el proyecto SIGEPER en tu entorno local:
 
 ### 1. **Clonar el repositorio**
    ```bash
-        git clone https://github.com/usuario/sigeper.git
-        cd sigeper
+        git clone https://github.com/Jabarona/PROYECTO-SIGEPER---RESERVA-MILITAR.git
+        cd PROYECTO-SIGEPER---RESERVA-MILITAR
+        
    ```
 ### 2. **Crear y activar un entorno virtual**
     ```bash
