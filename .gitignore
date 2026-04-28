@@ -1,0 +1,19 @@
+# Archivos de entorno y variables secretas
+.env
+
+# Directorios de entornos virtuales
+venv/
+env/
+.venv/
+
+# Cache de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Base de datos SQLite
+db.sqlite3
+
+# Archivos estáticos y multimedia
+media/
+staticfiles/
